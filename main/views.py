@@ -41,12 +41,15 @@ def create(response):
 
 		if form.is_valid():
 			n = form.cleaned_data["name"]
-			t = ToDoList(name=n)
-			t.save()
+			response.user.todolist_set.create(name=n)
 
-		return HttpResponseRedirect("/%i" %t.id)
+		return HttpResponseRedirect("/%i" %response.user.todolist_set.get(name=n).id)
 
 
 	else:
 		form = CreateNewList()
 		return render(response, "main/create.html", {"form":form})
+
+@login_required(login_url='/loginprompt/')
+def view(response):
+	return render(response, "main/view.html", {})
