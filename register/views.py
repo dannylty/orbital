@@ -12,3 +12,6 @@ def register(response):
 	else:
 		form = RegisterForm()
 		return render(response, "register/register.html", {"form":form})
+
+def loginprompt(response):
+	return render(response, "register/loginprompt.html", {})

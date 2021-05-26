@@ -2,8 +2,12 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import ToDoList, Item
 from .forms import CreateNewList
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
+@login_required(login_url='/loginprompt/')
+# Redirects if not logged in. Not a very nice solution
 def index(response, id):
 	ls = ToDoList.objects.get(id=id)
 
@@ -30,6 +34,7 @@ def index(response, id):
 def home(response):
 	return render(response, "main/home.html", {})
 
+@login_required(login_url='/loginprompt/')
 def create(response):
 	if response.method == "POST":
 		form = CreateNewList(response.POST)
