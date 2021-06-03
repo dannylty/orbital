@@ -3,8 +3,11 @@
     "",
     "\\main",
     "\\main\\templates",
-    "\\main\\templates\\main"
+    "\\main\\templates\\main",
+    "\\register",
+    "\\register\\templates\\register",
+    "\\register\\templates\\registration"
   ],
-  "SelectedNode": "\\main\\models.py",
+  "SelectedNode": "\\register\\forms.py",
   "PreviewInSolutionExplorer": false
 }

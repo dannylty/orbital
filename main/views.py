@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+def base_template_name_context_processor(request):
+    # Use request.user.is_authenticated() if using Django < 2.0
+    return 'login-base.html' if request.user.is_authenticated else 'base.html'
+
 @login_required(login_url='/loginprompt/')
 # Redirects if not logged in. Not a very nice solution
 def index(response, id):
@@ -32,6 +36,7 @@ def index(response, id):
 
 
 def home(response):
+	print(response.user.is_authenticated)
 	return render(response, "main/home.html", {})
 
 @login_required(login_url='/loginprompt/')

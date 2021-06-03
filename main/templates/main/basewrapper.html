@@ -1,0 +1,25 @@
+<!-- Wraps base just to decide sidebar content based on auth status -->
+
+{% extends 'main/base.html' %}
+
+{% block wraptitle %} 
+	{% block title %}My Website {% endblock %} 
+{% endblock %}
+
+{% block wrapcontent %}
+	{% if user.is_authenticated %}
+		<div class="sidenav">
+			<a href="/home">Home</a>
+			<a href="/create">Create</a>
+			<a href="/view">View</a>
+			<a href="/logout">Logout</a>
+		</div>
+	{% else %}
+		<div class="sidenav">
+			<a href="/home">Home</a>
+			<a href="/login">Login</a>
+		</div>
+	{% endif %}
+	{% block content %}
+	{% endblock %}
+{% endblock %}
