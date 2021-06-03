@@ -36,7 +36,6 @@ def index(response, id):
 
 
 def home(response):
-	print(response.user.is_authenticated)
 	return render(response, "main/home.html", {})
 
 @login_required(login_url='/loginprompt/')
@@ -58,3 +57,7 @@ def create(response):
 @login_required(login_url='/loginprompt/')
 def view(response):
 	return render(response, "main/view.html", {})
+
+@login_required(login_url='/loginprompt/')
+def profile(response):
+	return render(response, "main/profile.html", {})

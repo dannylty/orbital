@@ -1,0 +1,9 @@
+{% extends 'main/basewrapper.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %} 
+	{% for td in user.todolist_set.all %}
+	 <p><a href="/{{td.id}}">{{td.name}}</a></p>
+	{% endfor %}
+{% endblock %}
