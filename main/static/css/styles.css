@@ -1,0 +1,65 @@
+body {
+  background-color: #c06c84 !important;
+}
+
+a {
+  color: #f8b195;
+}
+
+.loginout {
+  position: absolute;
+  bottom: 10px;
+}
+
+.main {
+  padding-top: 10px;
+}
+
+.openbtn {
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #6c567b; /* #111 */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  position: absolute;
+  visibility: visible;
+}
+
+.openbtn:hover {
+  background-color: #f8b195; /* #444 */
+}
+
+.closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #6c567b; /* #111111 */
+  overflow-x: hidden;
+  padding-top: 40px;
+  transition: 0.5s;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  color: #f8b195; /* #818181 */
+  font-size: 1.5625rem;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover{
+  color:#f1f1f1;
+}
