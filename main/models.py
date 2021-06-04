@@ -21,10 +21,10 @@ class Item(models.Model):
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	name = models.CharField(max_length=50, blank=True)
-	year = models.IntegerField(null=True)
-	faculty = models.CharField(max_length=50, blank=True)
-	major = models.CharField(max_length=50, blank=True)
+	name = models.CharField(max_length=50, default='Anonymous')
+	year = models.CharField(max_length=10, default='Anonymous')
+	faculty = models.CharField(max_length=50, default='Anonymous')
+	major = models.CharField(max_length=50, default='Anonymous')
 
 	def __str__(self):
 		return self.name + "'s profile"

@@ -2,8 +2,14 @@
 
 {% block title %}Profile{% endblock %}
 
-{% block content %} 
-	{% for td in user.todolist_set.all %}
-	 <p><a href="/{{td.id}}">{{td.name}}</a></p>
-	{% endfor %}
+{% block content %}
+	<div>
+		<p>Name: {{user.userprofile.name}}</p>
+		<p>Year: {{user.userprofile.year}}</p>
+		<p>Faculty: {{user.userprofile.faculty}}</p>
+		<p>Major: {{user.userprofile.major}}</p>
+	</div>
+	<a href="/editprofile">
+   		<button class="btn btn-success">Edit Profile</button>
+	</a>
 {% endblock %}

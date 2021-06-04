@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import ToDoList, Item
-from .forms import CreateNewList
+from .forms import CreateNewList, EditProfileForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Create your views here.
 
-def base_template_name_context_processor(request):
-    # Use request.user.is_authenticated() if using Django < 2.0
-    return 'login-base.html' if request.user.is_authenticated else 'base.html'
+def home(response):
+	return render(response, "main/home.html", {})
 
 @login_required(login_url='/loginprompt/')
 # Redirects if not logged in. Not a very nice solution
@@ -34,10 +34,6 @@ def index(response, id):
 				print("Invalid")
 	return render(response, "main/list.html", {"ls":ls})
 
-
-def home(response):
-	return render(response, "main/home.html", {})
-
 @login_required(login_url='/loginprompt/')
 def create(response):
 	if response.method == "POST":
@@ -61,3 +57,26 @@ def view(response):
 @login_required(login_url='/loginprompt/')
 def profile(response):
 	return render(response, "main/profile.html", {})
+
+@login_required(login_url='/loginprompt/')
+def editprofile(response):
+
+####################################################################################################
+	if response.method == "POST":
+		form = EditProfileForm(response.POST, instance=response.user.userprofile)
+
+		if form.is_valid():
+			form.save()
+			messages.success(response, 'Your profile has been updated!')
+		print("error\nerror\nerror")
+
+		return HttpResponseRedirect("/profile")
+
+	else:
+		form = EditProfileForm(instance=response.user.userprofile)
+		return render(response, "main/editprofile.html", {"form":form})\
+####################################################################################################
+
+
+
+	return render(response, "main/editprofile.html", {})

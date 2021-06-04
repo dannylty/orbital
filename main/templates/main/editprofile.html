@@ -1,0 +1,19 @@
+{% extends 'main/base.html' %}
+
+{% block title %}EditProfile{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h3>Edit profile</h3>
+<form method="post" action="/editprofile">
+	{% csrf_token %}
+	{{form|crispy}}
+	<div class="input-group mb-3">
+		<div class="input-group-prepend">
+			<button type="submit", name="save" class="btn btn-success">Edit profile</button>
+		</div>
+	</div>
+</form>
+
+{% endblock %}

@@ -15,7 +15,9 @@
 <body>
 	{% if user.is_authenticated %}
 		<div id="mySidebar" class="sidenav">
-			<p style="color: #818181">Logged in as: {{user}}</p>
+			<div>
+				<p style="color: #aaaaaa">Logged in as: {{user}}</p>
+			</div>
 			<a href="/home">Home</a>
 			<a href="/profile">Profile</a>
 			<a href="/create">Create</a>
