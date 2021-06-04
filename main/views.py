@@ -66,15 +66,17 @@ def editprofile(response):
 		form = EditProfileForm(response.POST, instance=response.user.userprofile)
 
 		if form.is_valid():
+			m = form.cleaned_data["major"]
+			form = form.save(commit=False)
+			form.major = form.major
 			form.save()
-			messages.success(response, 'Your profile has been updated!')
-		print("error\nerror\nerror")
+			# messages.success(response, 'Your profile has been updated!')
 
 		return HttpResponseRedirect("/profile")
 
 	else:
 		form = EditProfileForm(instance=response.user.userprofile)
-		return render(response, "main/editprofile.html", {"form":form})\
+		return render(response, "main/editprofile.html", {"form":form})
 ####################################################################################################
 
 

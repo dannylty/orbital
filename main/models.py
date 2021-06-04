@@ -21,9 +21,19 @@ class Item(models.Model):
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	name = models.CharField(max_length=50, default='Anonymous')
-	year = models.CharField(max_length=10, default='Anonymous')
-	faculty = models.CharField(max_length=50, default='Anonymous')
+	name = models.CharField(max_length=50, default='Anonymous', blank=True)
+	year = models.CharField(max_length=10, choices=(('Anonymous', 'Anonymous'),
+		('1', '1'),('2', '2'), ('3', '3'), ('4', '4')), default='anon')
+
+	FACULTY_CHOICES = (
+		('Anonymous', 'Anonymous'),
+		('Business','Business'),
+		('Computing', 'Computing'),
+	    ('Science','Science'),
+	    ('Law','Law'),
+	    ('Wtv','Wtv'),
+    )
+	faculty = models.CharField(max_length=10, choices=FACULTY_CHOICES, default='anon')
 	major = models.CharField(max_length=50, default='Anonymous')
 
 	def __str__(self):
