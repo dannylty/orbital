@@ -47,3 +47,24 @@ class UserProfile(models.Model):
 	@receiver(post_save, sender=User)
 	def save_user_profile(sender, instance, **kwargs):
 		instance.userprofile.save()
+
+class Thread(models.Model):
+	# threadid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	title = models.CharField(max_length=100, default='', blank=True)
+	content = models.CharField(max_length=200, default='', blank=True)
+
+	def checkAllow(user):
+		return True
+
+	def __str__(self):
+		return self.content
+
+class Comment(models.Model):
+	thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	content = models.CharField(max_length=200, default='', blank=True)
+
+	def __str__(self):
+		return "Comment: " + self.content
+

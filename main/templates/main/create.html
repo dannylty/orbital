@@ -1,12 +1,14 @@
 {% extends 'main/base.html' %}
 
-{% block title %} Create New List {% endblock %}
+{% block title %} Create New Thread {% endblock %}
+{% load crispy_forms_tags %}
 
 {% block content %} 
 
-<h3>Create page</h3>
+<h3>Create Thread</h3>
 <form method="post" action="/create">
 	{% csrf_token %}
+	{{form|crispy}}
 	<div class="input-group mb-3">
 		<div class="input-group-prepend">
 			<button type="submit", name="save" class="btn btn-success">Create</button>

@@ -1,0 +1,18 @@
+{% extends 'main/base.html' %}
+
+{% block title %}View Thread{% endblock %}
+
+{% block content %} 
+	<p>{{t.user}}'s thread: {{t.title}}: {{t.content}}. ID: {{t.id}}</p>
+
+	{% for comment in t.comment_set.all %}
+	<p>{{comment.user}}: {{comment.content}}</p>
+	{% endfor %}
+
+	<form method="post" action="#">
+		{% csrf_token %}
+		<input type="text", name="new">
+		<button type="submit", class="btn btn-success">Comment</button>
+	</form>
+
+{% endblock %}

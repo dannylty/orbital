@@ -3,7 +3,7 @@
 {% block title %}View{% endblock %}
 
 {% block content %} 
-	{% for td in user.todolist_set.all %}
-	 <p><a href="/{{td.id}}">{{td.name}}</a></p>
+	{% for t in tlist %}
+		<p>{{t.user}}'s thread: {{t.title}}. Link: <a href="/thread/{{t.id}}">link</a></p>
 	{% endfor %}
 {% endblock %}
