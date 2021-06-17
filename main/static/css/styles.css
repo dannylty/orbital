@@ -1,9 +1,36 @@
-body {
-  background-color: #030303 #c06c84 !important;
-}
-
 a {
   color: #f8b195;
+}
+
+body {
+  background-color: #c06c84 !important;
+}
+
+.bar {
+  position: absolute;
+  width: 300px;
+  height: 40px;
+  top: 5px;
+  left: 50px;
+  border-radius: 10px;
+}
+
+.bar::placeholder {
+  position: absolute;
+  font-size: 20px;
+  top: 4px;
+  left: 10px
+}
+
+.brand {
+  position: absolute;
+  left: 30px;
+  padding-top: 3px;
+}
+
+.login {
+  position: absolute;
+  right: 100px;
 }
 
 .loginout {
@@ -15,32 +42,14 @@ a {
   padding-top: 10px;
 }
 
-.openbtn {
-  font-size: 20px;
-  cursor: pointer;
-  background-color: #6c567b; /* #111 */
-  color: white;
-  padding: 10px 15px;
-  border: none;
+.searchbar {
   position: absolute;
-  visibility: visible;
-}
-
-.openbtn:hover {
-  background-color: #f8b195; /* #444 */
-}
-
-.closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
+  left: 120px;
 }
 
 .sidenav {
   height: 100%;
-  width: 0;
+  width: 11%;
   position: fixed;
   z-index: 1;
   top: 0;
@@ -48,7 +57,6 @@ a {
   background-color: #6c567b; /* #111111 */
   overflow-x: hidden;
   padding-top: 40px;
-  transition: 0.5s;
 }
 
 .sidenav a {
@@ -62,4 +70,14 @@ a {
 
 .sidenav a:hover{
   color:#f1f1f1;
+}
+
+.signup {
+  position: absolute;
+  right: 0px;
+}
+
+.topnav {
+  height: 50px;
+  background-color: white;
 }

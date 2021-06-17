@@ -1,9 +1,10 @@
-function openNav() {
-  document.getElementById("mySidebar").style.width = "11%";
-  document.getElementById("openbtn").style.visibility = "hidden";
+document.getElementById("profile").addEventListener("mouseover", mouseOver);
+document.getElementById("profile").addEventListener("mouseout", mouseOut);
+
+function mouseOver() {
+  document.getElementById("profilemenu").style.visibility = "visible";
 }
 
-function closeNav() {
-  document.getElementById("mySidebar").style.width = "0";
-  document.getElementById("openbtn").style.visibility = "visible";
+function mouseOut() {
+  document.getElementById("profilemenu").style.visibility = "hidden";
 }

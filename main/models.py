@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver # for profile
 from django.db.models.signals import post_save # for profile
+# from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 class ToDoList(models.Model):
@@ -53,6 +54,7 @@ class Thread(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	title = models.CharField(max_length=100, default='', blank=True)
 	content = models.CharField(max_length=200, default='', blank=True)
+	# tags = ArrayField(models.CharField(max_length=20, default='', blank=True), default=list, blank=True)
 
 	def checkAllow(user):
 		return True
@@ -67,4 +69,3 @@ class Comment(models.Model):
 
 	def __str__(self):
 		return "Comment: " + self.content
-
