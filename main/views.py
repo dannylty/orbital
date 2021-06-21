@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Thread, Comment
+from .models import Thread, Comment, ThreadChat
 from .forms import CreateNewThread, EditProfileForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -82,3 +82,21 @@ def editprofile(response):
 ####################################################################################################
 
 	return render(response, "main/edit_profile.html", {})
+
+@login_required(login_url='/loginprompt/')
+def threadchat(response, id):
+	tc = ThreadChat.objects.get(id=id)
+
+	if response.method == "POST":
+		if response.user 
+		if response.POST.get("new"):
+			txt = response.POST.get("new")
+			if len(txt) > 0:
+				tc.chatpost_set.create(user=response.user, content=txt)
+			else:
+				print("error: invalid length")
+		else:
+			print("error: invalid POST")
+		return HttpResponseRedirect("/threadchat/%i" % id)
+
+	return render(response, "main/threadchat.html", {"tc":tc})

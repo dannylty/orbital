@@ -55,14 +55,17 @@ class Thread(models.Model):
 	def __str__(self):
 		return self.title
 
-class Comment(models.Model):
-	thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
+class Postable(models.Model):
+	"""Interface for postable content."""
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	content = models.CharField(max_length=200, default='', blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
-		return "Comment: " + self.content
+		return self.user
+
+class Comment(Postable):
+	thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
 
 # Automatically creates and links when new Thread instantiated
 class ThreadChat(models.Model):
@@ -88,6 +91,9 @@ class ThreadChat(models.Model):
 	# User finds thread and requests to join.
 	def requestUser(self, u):
 		pass
+
+class ChatPost(Postable):
+	threadchat = models.ForeignKey(ThreadChat, on_delete=models.CASCADE)
 		
 class ThreadJoinRequest(models.Model):
 	"""Proxy model that represents an add-to-chat request.
@@ -105,5 +111,5 @@ class ThreadJoinRequest(models.Model):
 	threadchat = models.ForeignKey(ThreadChat, on_delete=models.CASCADE)
 
 	def __str_(self):
-		return "ThreadJoinRequest: " + self.requester + self.owner
+		return self.requester + self.owner
 
