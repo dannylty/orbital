@@ -2,7 +2,14 @@
 
 {% block title %}View{% endblock %}
 
-{% block content %} 
+{% block content %}
+	{% for message in messages %}
+		<div class="container-fluid p-0">
+			<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+				{{ message }}
+			</div>
+		</div>
+	{% endfor %}
 	{% for t in tlist %}
 		<p>{{t.user}}'s thread: {{t.title}}. Link: <a href="/thread/{{t.id}}">link</a></p>
 	{% endfor %}
