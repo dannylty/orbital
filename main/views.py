@@ -40,11 +40,15 @@ def create(response):
 			# Require a check cause redirection function filters using title and content.
 			if Thread.objects.filter(title=t, content=c).count() > 0:
 				print("error: already exists")
-				return render(response, "main/already_exists.html", {})
+				messages.error(response, 'This post already exists. Please try again with different title/content.')
+				return render(response, "main/create.html", {"form":form})
 
 			response.user.thread_set.create(title=t, content=c)
+			messages.success(response, 'New post successfully created!')
 
-		return HttpResponseRedirect("/thread/%i" % response.user.thread_set.get(title=t, content=c).id)
+		# return HttpResponseRedirect("/thread/%i" % response.user.thread_set.get(title=t, content=c).id)
+		# I changed it to redirect to view instead
+		return HttpResponseRedirect("/view")
 
 
 	else:
@@ -72,7 +76,7 @@ def editprofile(response):
 			form = form.save(commit=False)
 			form.major = form.major
 			form.save()
-			# messages.success(response, 'Your profile has been updated!')
+			messages.success(response, 'Your profile has been updated!')
 
 		return HttpResponseRedirect("/profile")
 

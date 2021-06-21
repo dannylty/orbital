@@ -3,7 +3,14 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-	<div>
+	{% for message in messages %}
+		<div class="container-fluid p-0">
+			<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+				{{ message }}
+			</div>
+		</div>
+	{% endfor %}
+	<div class="success">
 		<p>Name: {{user.userprofile.name}}</p>
 		<p>Year: {{user.userprofile.year}}</p>
 		<p>Faculty: {{user.userprofile.faculty}}</p>

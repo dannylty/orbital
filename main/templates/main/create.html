@@ -3,9 +3,16 @@
 {% block title %} Create New Thread {% endblock %}
 {% load crispy_forms_tags %}
 
-{% block content %} 
+{% block content %}
 
 <h3>Create Thread</h3>
+{% for message in messages %}
+	<div class="container-fluid p-0">
+		<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+			{{ message }}
+		</div>
+	</div>
+{% endfor %}
 <form method="post" action="/create">
 	{% csrf_token %}
 	{{form|crispy}}
