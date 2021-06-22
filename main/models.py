@@ -142,6 +142,10 @@ class Notifiable(PolymorphicModel):
 	def __str__(self):
 		return str(self.user)
 
+	def action(self, accepted):
+	# Override this method
+		pass
+
 class ThreadJoinRequestNotification(Notifiable):
 	threadjoinrequest = models.OneToOneField(ThreadJoinRequest, on_delete=models.CASCADE)
 
