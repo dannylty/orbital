@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from polymorphic.models import PolymorphicModel
 # from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
@@ -49,17 +50,26 @@ class Thread(models.Model):
 #	tags = ArrayField(models.CharField(max_length=20, default='', blank=True), default='', blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 
-	def checkAllow(self, user):
-		return True
+	def getUser(self):
+		return self.user
+
+	def getThreadChat(self):
+		return self.threadchat
 
 	def __str__(self):
 		return self.title
 
+	class Meta:
+		unique_together = (("title", "content"),)
+
 class Postable(models.Model):
-	"""Interface for postable content."""
+	"""Abstract class for postable content."""
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	content = models.CharField(max_length=200, default='', blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
+
+	class Meta:
+		abstract = True
 
 	def __str__(self):
 		return self.user
@@ -84,9 +94,14 @@ class ThreadChat(models.Model):
 	def __str__(self):
 		return str(self.thread)
 
+	# Check if requesting user can view the private chat.
+	def checkAllow(self, u):
+		return u in self.user_list.all() or u == self.thread.getUser()
+
 	# Owner approves user's request to join.
 	def addUser(self, u):
-		pass
+		self.user_list.add(u)
+		self.save()
 
 	# User finds thread and requests to join.
 	def requestUser(self, u):
@@ -110,6 +125,38 @@ class ThreadJoinRequest(models.Model):
 	requestee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="requestee_set")
 	threadchat = models.ForeignKey(ThreadChat, on_delete=models.CASCADE)
 
-	def __str_(self):
-		return self.requester + self.owner
+	def addUser(self):
+		self.threadchat.addUser(self.requester)
 
+	class Meta:
+		unique_together = (("requester", "threadchat"),)
+
+	def __str__(self):
+		return str(self.requester) + "-" + str(self.threadchat)
+
+class Notifiable(PolymorphicModel):
+	"""Abstract class for notifications."""
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return str(self.user)
+
+class ThreadJoinRequestNotification(Notifiable):
+	threadjoinrequest = models.OneToOneField(ThreadJoinRequest, on_delete=models.CASCADE)
+
+	# Automatically creates a notif for the requestee when new ThreadJoinRequest instantiated.
+	@receiver(post_save, sender=ThreadJoinRequest)
+	def createThreadJoinRequestNotification(sender, instance, created, **kwargs):
+		if created:
+			ThreadJoinRequestNotification.objects.create(user=instance.requestee, threadjoinrequest=instance)
+
+	@receiver(post_save, sender=ThreadJoinRequest)
+	def saveThreadJoinRequestNotification(sender, instance, **kwargs):
+		instance.threadjoinrequestnotification.save()
+
+	def action(self, accepted):
+		if accepted:
+			self.threadjoinrequest.addUser()
+		self.threadjoinrequest.delete()
+		# this will execute CASCADE and this notification gets auto-deleted

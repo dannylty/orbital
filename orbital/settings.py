@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'main.apps.MainConfig',
     'register.apps.RegisterConfig',
+    'polymorphic',
 ]
 
 MIDDLEWARE = [
@@ -130,7 +131,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/home"
 LOGOUT_REDIRECT_URL = "/log-out"
 
 # Bootstrap tags for django.contrib.messages

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Thread, Comment, ThreadChat
+from .models import Thread, Comment, ThreadChat, ThreadJoinRequest
 from .forms import CreateNewThread, EditProfileForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -15,6 +15,9 @@ def home(response):
 def index(response, id):
 	t = Thread.objects.get(id=id)
 
+	button_mode = t.getThreadChat().checkAllow(response.user)
+	already_requested = len(ThreadJoinRequest.objects.filter(threadchat=t.getThreadChat(), requester=response.user)) > 0
+
 	if response.method == "POST":
 		if response.POST.get("new"):
 			txt = response.POST.get("new")
@@ -22,11 +25,23 @@ def index(response, id):
 				t.comment_set.create(user=response.user, content=txt)
 			else:
 				print("error: invalid length")
+		elif response.POST.get("gochat"):
+			return HttpResponseRedirect("/threadchat/%i" % t.getThreadChat().id)
+		elif response.POST.get("requestchat"):
+			if len(ThreadJoinRequest.objects.filter(threadchat=t.getThreadChat(), requester=response.user)) > 0:
+				print("warning: already requested")
+			else:
+				t.getThreadChat().threadjoinrequest_set.create(requester=response.user, requestee=t.user)
 		else:
 			print("error: invalid POST")
 		return HttpResponseRedirect("/thread/%i" % id)
 
-	return render(response, "main/index.html", {"t":t})
+	return render(response, "main/index.html",
+		{"t":t,
+		"button_mode":button_mode,
+		"len_list":len(t.getThreadChat().user_list.all()) + 1,
+		"requested":already_requested}
+		)
 
 @login_required(login_url='/loginprompt/')
 def create(response):
@@ -66,33 +81,27 @@ def profile(response):
 
 @login_required(login_url='/loginprompt/')
 def editprofile(response):
-
-####################################################################################################
 	if response.method == "POST":
 		form = EditProfileForm(response.POST, instance=response.user.userprofile)
-
 		if form.is_valid():
 			m = form.cleaned_data["major"]
 			form = form.save(commit=False)
 			form.major = form.major
 			form.save()
 			messages.success(response, 'Your profile has been updated!')
-
 		return HttpResponseRedirect("/profile")
-
 	else:
 		form = EditProfileForm(instance=response.user.userprofile)
 		return render(response, "main/edit_profile.html", {"form":form})
-####################################################################################################
-
 	return render(response, "main/edit_profile.html", {})
 
 @login_required(login_url='/loginprompt/')
 def threadchat(response, id):
 	tc = ThreadChat.objects.get(id=id)
-
+	if not tc.checkAllow(response.user):
+		#### ADD WARNING/ERROR HERE ####
+		return HttpResponseRedirect("/thread/%i" % id)
 	if response.method == "POST":
-		if response.user 
 		if response.POST.get("new"):
 			txt = response.POST.get("new")
 			if len(txt) > 0:
@@ -104,3 +113,16 @@ def threadchat(response, id):
 		return HttpResponseRedirect("/threadchat/%i" % id)
 
 	return render(response, "main/threadchat.html", {"tc":tc})
+
+@login_required(login_url='/loginprompt/')
+def notifications(response):
+	nlist = response.user.notifiable_set.all()
+
+	if response.method == "POST":
+		accepted = response.POST.get("accepted") == "true"
+		for n in nlist:
+			if response.POST.get("notif" + str(n.id)) == "clicked":
+				n.action(accepted)
+		return HttpResponseRedirect("/notifications")
+	
+	return render(response, "main/notifications.html", {"nlist":nlist})

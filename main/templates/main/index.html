@@ -15,4 +15,16 @@
 		<button type="submit", class="btn btn-success">Comment</button>
 	</form>
 
+	<form method="post" action="#">
+		{% csrf_token %}
+		{% if button_mode %}
+			<button type="submit", name="gochat", value="true", class="btn btn-success">Go to chat</button>
+		{% elif not requested %}
+			<button type="submit", name="requestchat", value="true", class="btn btn-success">Request to group chat</button>		
+		{% else %}
+			Already requested.
+		{% endif %}
+		People in chat: {{len_list}}
+	</form>
+
 {% endblock %}

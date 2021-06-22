@@ -43,7 +43,7 @@
 			<input class="bar" type="search" placeholder="Search" aria-label="Search">
 		</form>
 		{% if user.is_authenticated %}
-			<a class="view" href="/view" style="position: absolute; right: 300px;">View</a>
+			<a class="notifs" href="/notifications" style="position: absolute; right: 300px;">Notifs</a>
 			<a class="create" href="/create" style="position: absolute; right: 200px;">Create</a>
 			<a class="login" href="/profile">{{user}}</a>
 			<a class="signup" href="/logout">Logout</a>
