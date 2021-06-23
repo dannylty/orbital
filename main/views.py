@@ -98,7 +98,7 @@ def editprofile(response):
 def threadchat(response, id):
 	tc = ThreadChat.objects.get(id=id)
 	if not tc.checkAllow(response.user):
-		#### ADD WARNING/ERROR HERE ####
+		messages.error(response, 'This chat is private, send a request to join the group.')
 		return HttpResponseRedirect("/thread/%i" % id)
 	if response.method == "POST":
 		if response.POST.get("new"):

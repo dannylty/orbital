@@ -13,12 +13,14 @@
 
 	<form method="post" action="#">
 		{% csrf_token %}
-		<ul>
-			{% for n in nlist %}
-				<input type="checkbox" name="notif{{n.id}}" value="clicked">{{n.created_at}}
-		</ul>
+		{% for n in nlist %}
+			<ul>
+				<input type="checkbox" name="notif{{n.id}}" value="clicked">
+				<p class="joinchatrequest">{{n.threadjoinrequest.requester}} has requested to join chat for your post:
+				{{n.threadjoinrequest.threadchat}}</p>
+			</ul>
+		{% endfor %}
 		<button type="submit", name="accepted", value="true", class="btn btn-success">Accept</button>
 		<button type="submit", name="declined", value="true", class="btn btn-warning">Decline</button>
 	</form>
-	{% endfor %}
 {% endblock %}

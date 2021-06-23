@@ -1,6 +1,14 @@
 a {
-  color: #f8b195;
+  color: black;
   text-decoration: none;
+  display: block;
+}
+
+.bell {
+  height: 30px;
+  position: absolute;
+  right: 150px;
+  margin-top: 10px;
 }
 
 body {
@@ -29,22 +37,75 @@ body {
   padding-top: 3px;
 }
 
-.countmein {
-  background-color: #7D4C77;
+.commentorchat {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 50% 50%;
   border-radius: 0 5px 5px 0;
   height: 100%;
-  padding: 20px 5px;
+  padding: 0;
 }
 
-.countmein h3 {
+.commentorchat a {
   color: white;
-  height: 50%;
+  height: 100%;
   font-size: 150%;
+}
+
+.comments {
+  padding: 8px 0;
+  background-color: #AD306A;
+  height: 100%;
+  border-top-right-radius: 5px;
+  text-align: center;
+}
+
+.comments h3 {
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+.dropdown {
+  position: absolute;
+  display: inline-block;
+  right: 50px;
+  margin-top: 13px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 90px;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
 }
 
 .grid-container {
   display: grid;
-  grid-template-columns: 80% 20%;
+  grid-template-columns: 85% 15%;
+  padding: 30px;
+}
+
+.joinchat {
+  padding: 8px 0;
+  background-color: #7D4C77;
+  height: 100%;
+  border-bottom-right-radius: 5px;
+  text-align: center;
+}
+
+.joinchat h3 {
+  display: inline-block;
+}
+
+.joinchatrequest {
+  display: inline;
 }
 
 .login {
@@ -52,13 +113,15 @@ body {
   right: 100px;
 }
 
-.loginout {
-  position: absolute;
-  bottom: 10px;
-}
-
 .main {
   padding-top: 10px;
+}
+
+.plus {
+  height: 25px;
+  position: absolute;
+  right: 200px;
+  margin-top: 12px;
 }
 
 .post-info {

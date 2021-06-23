@@ -2,12 +2,20 @@
 
 {% block title %}View Thread{% endblock %}
 
-{% block content %} 
+{% block content %}
+	{% for message in messages %}
+		<div class="container-fluid p-0">
+			<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+				{{ message }}
+			</div>
+		</div>
+	{% endfor %}
+	
 	<p>{{t.user}}'s thread: {{t.title}}: {{t.content}}. ID: {{t.id}}</p>
 	<p>Tags: {{t.tags}}</p>
 
 	{% for comment in t.comment_set.all %}
-	<p>{{comment.user}}: {{comment.content}}</p>
+		<p>{{comment.user}}: {{comment.content}}</p>
 	{% endfor %}
 
 	<form method="post" action="#">
@@ -21,7 +29,7 @@
 		{% if button_mode %}
 			<button type="submit", name="gochat", value="true", class="btn btn-success">Go to chat</button>
 		{% elif not requested %}
-			<button type="submit", name="requestchat", value="true", class="btn btn-success">Request to group chat</button>		
+			<button type="submit", name="requestchat", value="true", class="btn btn-success">Request to group chat</button>
 		{% else %}
 			Already requested.
 		{% endif %}

@@ -103,7 +103,7 @@ class ThreadChat(models.Model):
 
 class ChatPost(Postable):
 	threadchat = models.ForeignKey(ThreadChat, on_delete=models.CASCADE)
-		
+
 class ThreadJoinRequest(models.Model):
 	"""Proxy model that represents an add-to-chat request.
 
