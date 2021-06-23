@@ -1,11 +1,17 @@
 from django import forms
 from .models import UserProfile, Thread
-from django.contrib.postgres.forms import SimpleArrayField
 
 class CreateNewThread(forms.Form):
+	TAG_CHOICES = (
+		('Chill', 'Chill'),
+		('General','General'),
+		('Food and Drinks', 'Food and Drinks'),
+		('Module','Module'),
+	)
+
 	title = forms.CharField(label="Title", max_length=200)
 	content = forms.CharField(label="Content", max_length=200)
-	tags = forms.CharField(label="Tags (separate tags with commas)", max_length=100, required=False)
+	tags = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=TAG_CHOICES)
 
 class CreateNewComment(forms.Form):
 	content = forms.CharField(label="Content", max_length=200)

@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from polymorphic.models import PolymorphicModel
-# from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -20,7 +19,7 @@ class UserProfile(models.Model):
 		('Law','Law'),
 		('Wtv','Wtv'),
 	)
-	faculty = models.CharField(max_length=10, choices=FACULTY_CHOICES, default='anon')
+	faculty = models.CharField(max_length=10, choices=FACULTY_CHOICES, default='Anonymous')
 	major = models.CharField(max_length=50, default='Anonymous')
 
 	def __str__(self):
@@ -46,13 +45,10 @@ class Thread(models.Model):
 		('Module','Module'),
 	)
 
-	def getTagDefault():
-		return {'chill':0, 'general':0, 'food and drinks':0, 'module':0}
-
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	title = models.CharField(max_length=100, default='', blank=True)
 	content = models.CharField(max_length=200, default='', blank=True)
-	tags = models.CharField(max_length=200, default='', blank=True, null=True)
+	tags = models.JSONField(default=list, null=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 
 	def getUser(self):
@@ -64,8 +60,8 @@ class Thread(models.Model):
 	def __str__(self):
 		return self.title
 
-	def printTagString(self):
-		return ", ".join([tag for tag in self.tags.keys() if self.tags[tag] == 1])
+#	def printTagString(self):
+#		return ", ".join([tag for tag in self.tags.keys() if self.tags[tag] == 1])
 
 	class Meta:
 		unique_together = (("title", "content"),)
@@ -75,9 +71,6 @@ class Postable(PolymorphicModel):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	content = models.CharField(max_length=200, default='', blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
-
-	class Meta:
-		abstract = True
 
 	def __str__(self):
 		return self.user
@@ -146,9 +139,6 @@ class Notifiable(PolymorphicModel):
 	"""Abstract class for notifications."""
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	created_at = models.DateTimeField(auto_now_add=True)
-
-	class Meta:
-		abstract = True
 
 	def __str__(self):
 		return str(self.user)

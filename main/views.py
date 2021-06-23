@@ -49,8 +49,10 @@ def create(response):
 		form = CreateNewThread(response.POST)
 
 		if form.is_valid():
+			print(response.POST)
 			t = form.cleaned_data["title"]
 			c = form.cleaned_data["content"]
+			tg = form.cleaned_data["tags"]
 
 			# Require a check cause redirection function filters using title and content.
 			if Thread.objects.filter(title=t, content=c).count() > 0:
@@ -58,7 +60,7 @@ def create(response):
 				messages.error(response, 'This post already exists. Please try again with different title/content.')
 				return render(response, "main/create.html", {"form":form})
 
-			response.user.thread_set.create(title=t, content=c)
+			response.user.thread_set.create(title=t, content=c, tags=tg)
 			messages.success(response, 'New post successfully created!')
 
 		# return HttpResponseRedirect("/thread/%i" % response.user.thread_set.get(title=t, content=c).id)
