@@ -1,4 +1,5 @@
 {% extends 'main/base.html' %}
+{% load static %}
 
 {% block title %}View{% endblock %}
 
@@ -11,6 +12,20 @@
 		</div>
 	{% endfor %}
 	{% for t in tlist %}
-		<p>{{t.user}}'s thread: {{t.title}}. Link: <a href="/thread/{{t.id}}">link</a></p>
+		<div class="grid-container">
+			<a href="/thread/{{t.id}}">
+				<div class="post-info">
+					<h3>{{t.title}}</h3>
+					<p>{{t.content}}</p>
+				</div>
+			</a>
+			<a href="/threadchat/{{t.id}}">
+				<div class="countmein">
+					<h3>Count me in!</h3>
+				</div>
+			</a>
+		</div>
+		<br>
+		<br>
 	{% endfor %}
 {% endblock %}

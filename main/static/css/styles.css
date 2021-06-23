@@ -1,9 +1,10 @@
 a {
   color: #f8b195;
+  text-decoration: none;
 }
 
 body {
-  background-color: #c06c84 !important;
+  background-color: #c06c84;
 }
 
 .bar {
@@ -28,6 +29,24 @@ body {
   padding-top: 3px;
 }
 
+.countmein {
+  background-color: #7D4C77;
+  border-radius: 0 5px 5px 0;
+  height: 100%;
+  padding: 20px 5px;
+}
+
+.countmein h3 {
+  color: white;
+  height: 50%;
+  font-size: 150%;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 80% 20%;
+}
+
 .login {
   position: absolute;
   right: 100px;
@@ -42,39 +61,22 @@ body {
   padding-top: 10px;
 }
 
+.post-info {
+  background-color: white;
+  border-radius: 5px 0 0 5px;
+  height: 100%;
+  color: #707070;
+  padding: 10px;
+}
+
 .searchbar {
   position: absolute;
   left: 120px;
 }
 
-.sidenav {
-  height: 100%;
-  width: 11%;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #6c567b; /* #111111 */
-  overflow-x: hidden;
-  padding-top: 40px;
-}
-
-.sidenav a {
-  padding: 6px 8px 6px 16px;
-  text-decoration: none;
-  color: #f8b195; /* #818181 */
-  font-size: 1.5625rem;
-  display: block;
-  transition: 0.3s;
-}
-
-.sidenav a:hover{
-  color:#f1f1f1;
-}
-
 .signup {
   position: absolute;
-  right: 0px;
+  right: 0;
 }
 
 .topnav {

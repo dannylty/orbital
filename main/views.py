@@ -63,10 +63,7 @@ def create(response):
 			response.user.thread_set.create(title=t, content=c, tags=tg)
 			messages.success(response, 'New post successfully created!')
 
-		# return HttpResponseRedirect("/thread/%i" % response.user.thread_set.get(title=t, content=c).id)
-		# I changed it to redirect to view instead
 		return HttpResponseRedirect("/view")
-
 
 	else:
 		form = CreateNewThread()
@@ -126,5 +123,5 @@ def notifications(response):
 			if response.POST.get("notif" + str(n.id)) == "clicked":
 				n.action(accepted)
 		return HttpResponseRedirect("/notifications")
-	
+
 	return render(response, "main/notifications.html", {"nlist":nlist})
