@@ -16,10 +16,10 @@ class UserProfile(models.Model):
 		('Anonymous', 'Anonymous'),
 		('Business','Business'),
 		('Computing', 'Computing'),
-	    ('Science','Science'),
-	    ('Law','Law'),
-	    ('Wtv','Wtv'),
-    )
+		('Science','Science'),
+		('Law','Law'),
+		('Wtv','Wtv'),
+	)
 	faculty = models.CharField(max_length=10, choices=FACULTY_CHOICES, default='anon')
 	major = models.CharField(max_length=50, default='Anonymous')
 
@@ -36,18 +36,23 @@ class UserProfile(models.Model):
 	def saveUserProfile(sender, instance, **kwargs):
 		instance.userprofile.save()
 
+
+
 class Thread(models.Model):
 	TAG_CHOICES = (
 		('Chill', 'Chill'),
 		('General','General'),
 		('Food and Drinks', 'Food and Drinks'),
-	    ('Module','Module'),
-    )
+		('Module','Module'),
+	)
+
+	def getTagDefault():
+		return {'chill':0, 'general':0, 'food and drinks':0, 'module':0}
 
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	title = models.CharField(max_length=100, default='', blank=True)
 	content = models.CharField(max_length=200, default='', blank=True)
-#	tags = ArrayField(models.CharField(max_length=20, default='', blank=True), default='', blank=True)
+	tags = models.JSONField(default=getTagDefault)
 	created_at = models.DateTimeField(auto_now_add=True)
 
 	def getUser(self):
