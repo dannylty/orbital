@@ -4,6 +4,7 @@
 
 {% block content %} 
 	<p>{{t.user}}'s thread: {{t.title}}: {{t.content}}. ID: {{t.id}}</p>
+	<p>Tags: {{t.printTagString}}</p>
 
 	{% for comment in t.comment_set.all %}
 	<p>{{comment.user}}: {{comment.content}}</p>

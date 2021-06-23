@@ -52,7 +52,7 @@ class Thread(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	title = models.CharField(max_length=100, default='', blank=True)
 	content = models.CharField(max_length=200, default='', blank=True)
-	tags = models.JSONField(default=getTagDefault)
+	tags = models.CharField(max_length=200, default='', blank=True, null=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 
 	def getUser(self):
@@ -64,10 +64,13 @@ class Thread(models.Model):
 	def __str__(self):
 		return self.title
 
+	def printTagString(self):
+		return ", ".join([tag for tag in self.tags.keys() if self.tags[tag] == 1])
+
 	class Meta:
 		unique_together = (("title", "content"),)
 
-class Postable(models.Model):
+class Postable(PolymorphicModel):
 	"""Abstract class for postable content."""
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	content = models.CharField(max_length=200, default='', blank=True)
@@ -143,6 +146,9 @@ class Notifiable(PolymorphicModel):
 	"""Abstract class for notifications."""
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	created_at = models.DateTimeField(auto_now_add=True)
+
+	class Meta:
+		abstract = True
 
 	def __str__(self):
 		return str(self.user)
