@@ -38,13 +38,6 @@ class UserProfile(models.Model):
 
 
 class Thread(models.Model):
-	TAG_CHOICES = (
-		('Chill', 'Chill'),
-		('General','General'),
-		('Food and Drinks', 'Food and Drinks'),
-		('Module','Module'),
-	)
-
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	title = models.CharField(max_length=100, default='', blank=True)
 	content = models.CharField(max_length=200, default='', blank=True)
