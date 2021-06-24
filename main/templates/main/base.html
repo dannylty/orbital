@@ -13,28 +13,6 @@
 </head>
 
 <body>
-	<!-- {% if user.is_authenticated %}
-		<div id="mySidebar" class="sidenav">
-			<div>
-				<p style="color: #aaaaaa">Logged in as: {{user}}</p>
-			</div>
-			<a href="/home">Home</a>
-			<a href="/profile">Profile</a>
-			<a href="/create">Create</a>
-			<a href="/view">View</a>
-			<div class="loginout">
-				<a href="/logout">Logout</a>
-			</div>
-		</div>
-	{% else %}
-		<div id="mySidebar" class="sidenav">
-			<a href="/home">Home</a>
-			<div class="loginout">
-				<a href="/login">login</a>
-			</div>
-		</div>
-	{% endif %} -->
-
 	<nav class="topnav">
 		<a class="brand" href="/">
 			<img src="{% static 'images/friends.png' %}" alt="home">
@@ -43,11 +21,14 @@
 			<input class="bar" type="search" placeholder="Search" aria-label="Search">
 		</form>
 		{% if user.is_authenticated %}
-			<a href="/notifications">
+			<a class="topnavicon" href="/notifications">
 				<img class='bell' src="{% static 'images/bell.svg' %}" alt="notifs">
 			</a>
-			<a href="/create">
+			<a class="topnavicon" href="/create">
 				<img class='plus' src="{% static 'images/plus.svg' %}" alt="create">
+			</a>
+			<a class="topnavicon" href="/chatlist">
+				<img class='chatlist' src="{% static 'images/chat.svg' %}" alt="chatlist">
 			</a>
 			<div class="dropdown">
 				<p>{{user}}</p>
@@ -68,14 +49,16 @@
 
 
 
-	<div id="content", name="content", class="main">
+	<!-- <div id="content", name="content", class="main">
 		<div class="row justify-content-center">
-			<div class="col-8">
-				{% block content %}
-				{% endblock %}
-			</div>
-		</div>
+			<div class="col-8"> -->
+	<div class="main">
+		{% block content %}
+		{% endblock %}
 	</div>
+			<!-- </div>
+		</div>
+	</div> -->
 
 	<script src="{% static 'js/transitions.js' %}" charset="utf-8"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>

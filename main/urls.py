@@ -14,4 +14,5 @@ path("edit_profile", views.editprofile, name="editprofile"),
 path("thread/<int:id>", views.index, name="index"),
 path("threadchat/<int:id>", views.threadchat, name="threadchat"),
 path("notifications", views.notifications, name="notifications"),
+path("chatlist", views.chatlist, name="chatlist"),
 ]

@@ -1,0 +1,19 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Thread Chat{% endblock %}
+
+{% block content %}
+	<div class="chat-sidebar">
+		<h3 class="inbox">Inbox</h3>
+		<div class="scrollable-chats">
+			{% for threadchat in all_tc %}
+				<a href="/threadchat/{{threadchat.id}}">
+					<div class="chat-info">
+						<p>{{threadchat.thread.user}}</p>
+						<h5>{{threadchat.thread.title}}</h5>
+					</div>
+				</a>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}
