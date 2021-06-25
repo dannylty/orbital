@@ -21,7 +21,7 @@ class CreateNewThread(forms.Form):
 	title = forms.CharField(label="Title", max_length=200)
 	content = forms.CharField(label="Content", max_length=200)
 	location = forms.ChoiceField(label="Location", choices=LOCATION_CHOICES)
-	tags = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=TAG_CHOICES)
+	tags = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=TAG_CHOICES, required=False)
 
 class CreateNewComment(forms.Form):
 	content = forms.CharField(label="Content", max_length=200)
