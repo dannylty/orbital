@@ -9,8 +9,18 @@ class CreateNewThread(forms.Form):
 		('Module','Module'),
 	)
 
+	LOCATION_CHOICES = (
+		('General', 'General'),
+		('COM','Computing'),
+		('KR MRT', 'KR MRT'),
+		('SCI','SCI'),
+		('BIZ', 'BIZ'),
+		('WTV', 'WTV')
+	)
+
 	title = forms.CharField(label="Title", max_length=200)
 	content = forms.CharField(label="Content", max_length=200)
+	location = forms.ChoiceField(label="Location", choices=LOCATION_CHOICES)
 	tags = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=TAG_CHOICES)
 
 class CreateNewComment(forms.Form):

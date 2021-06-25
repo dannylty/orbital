@@ -136,3 +136,9 @@ def chatlist(response):
 		if not all_tc[i].checkAllow(response.user):
 			all_tc.remove(all_tc[i])
 	return render(response, "main/chatlist.html", {"all_tc":all_tc})
+
+def search(response):
+	s = response.GET['q']
+	tlist = Thread.objects.filter(title__icontains=s) | Thread.objects.filter(content__icontains=s)
+	# We could do something like a relevance rank but probably no need for now.
+	return render(response, "main/view.html", {"tlist":tlist})
