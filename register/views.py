@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
+from django.contrib import messages
 
 # Create your views here.
 def register(response):
@@ -17,4 +18,5 @@ def loginprompt(response):
 	return render(response, "register/loginprompt.html", {})
 
 def logout(response):
-	return render(response, "register/logout.html", {})
+	messages.success(response, 'Logged out successfully')
+	return render(response, "register/loginprompt.html", {})

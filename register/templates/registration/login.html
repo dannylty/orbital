@@ -1,6 +1,6 @@
 <!-- Put under registration cause Django reads from this folder -->
 
-{% extends "main/base.html" %}
+{% extends 'main/base.html' %}
 
 {% block title %}
 Login to FRIENDS
@@ -9,10 +9,15 @@ Login to FRIENDS
 {% load crispy_forms_tags %}
 
 {% block content %}
-	<form method="post" class="form-group">
-		{% csrf_token %}
-		{{form|crispy}}
-		<p>Don't have an account? Create one <a href="/register">here</a></p>
-		<button type="submit" class="btn btn-success">Login</button>
-	</form>
+	<div class="center">
+		<div class="requests">
+			<h3>Log in</h3>
+			<form method="post" class="form-group">
+				{% csrf_token %}
+				{{form|crispy}}
+				<p>Don't have an account? Create one <a href="/register">here</a></p>
+				<button type="submit" class="btn btn-success">Login</button>
+			</form>
+		</div>
+	</div>
 {% endblock %}

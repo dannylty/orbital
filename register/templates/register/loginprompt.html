@@ -4,6 +4,13 @@
 
 {% block content %}
 	<div class="center">
+		{% for message in messages %}
+			<div class="container-fluid p-0">
+				<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+					{{ message }}
+				</div>
+			</div>
+		{% endfor %}
 		<div class="requests">
 			<h1>Welcome to friends.</h1>
 			<p>friends. is an all-in-one package for on-the-fly, school-based

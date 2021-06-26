@@ -13,23 +13,26 @@
 			</div>
 		{% endfor %}
 		<div class="requests">
+			<h3>My profile</h3>
+			<hr>
 			<div class="">
-				<h3>{{user.userprofile.name}}</h3>
+				<h4>{{user.userprofile.name}}</h4>
 				<p>Year {{user.userprofile.year}}</p>
 				<p>{{user.userprofile.faculty}}</p>
 				<p>Majoring in {{user.userprofile.major}}</p>
 			</div>
 			<a href="/edit_profile">
-		   		<button class="btn btn-success">Edit Profile</button>
+		   		<button class="comment-btns-btn btn">Edit</button>
+			</a>
+			<hr>
+			<h3>Profile Thread</h3>
+			<p>This is your profile thread that can be viewed by others. Edit the content
+				and set it to visible for people to see your profile thread in their feed.</p>
+			<p>Title: {{t.title}}</p>
+			<p>Content: {{t.content}}</p>
+			<a href="/edit_profile_thread">
+		   		<button class="comment-btns-btn btn">Edit</button>
 			</a>
 		</div>
 	</div>
-	<br></br>
-	<h2>Profile Thread</h2>
-	<p>This is your profile thread that can be viewed by others. Edit the content and set it to visible for people to see your profile thread in their feed.</p>
-	<p>Title: {{t.title}}</p>
-	<p>Content: {{t.content}}</p>
-	<a href="/edit_profile_thread">
-   		<button class="btn btn-success">Edit Profile Thread</button>
-	</a>
 {% endblock %}
