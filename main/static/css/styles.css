@@ -102,8 +102,10 @@ body {
 
 .chatbox-chat {
   position: absolute;
-  bottom: 50px;
+  bottom: 30px;
+  height: 94.3%;
   width: 100%;
+  overflow: auto;
 }
 
 .chatbox-title {
@@ -132,9 +134,16 @@ body {
 }
 
 .comment-btn button {
+  width: 96px;
   border-radius: 20px;
   color: white;
   background-color: #c06c84;
+}
+
+.comment-btn p {
+  display: inline-block;
+  margin-right: 10px;
+  margin-bottom: 0;
 }
 
 .comment-commenter {

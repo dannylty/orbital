@@ -13,29 +13,8 @@
 			</div>
 		{% endfor %}
 
-		<!-- {% for comment in t.comment_set.all %}
-			<p>{{comment.user}}: {{comment.content}}</p>
-		{% endfor %}
-
-		<form method="post" action="#">
-			{% csrf_token %}
-			<input type="text", name="new">
-			<button type="submit", class="btn btn-success">Comment</button>
-		</form>
-
-		<form method="post" action="#">
-			{% csrf_token %}
-			{% if button_mode %}
-				<button type="submit", name="gochat", value="true", class="btn btn-success">Go to chat</button>
-			{% elif not requested %}
-				<button type="submit", name="requestchat", value="true", class="btn btn-success">Request to group chat</button>
-			{% else %}
-				Already requested.
-			{% endif %}
-			People in chat: {{len_list}}
-		</form> -->
-
 		<div class="full-info">
+			<p class="post-datetime">{{t.created_at}}</p>
 			<h3>{{t.title}}</h3>
 			<p>{{t.content}}</p>
 			{% for tag in t.tags %}
@@ -49,8 +28,15 @@
 			<div class="comment-form">
 				<form method="post" action="#">
 					{% csrf_token %}
-					<textarea name="new" placeholder="Thoughts?"></textarea>
+					<textarea name="new" placeholder="Thoughts?" maxlength="200"></textarea>
 					<div class="comment-btn">
+						{% if button_mode %}
+							<button type="submit", name="gochat", value="true", class="btn">Chat</button>
+						{% elif not requested %}
+							<button type="submit", name="requestchat", value="true", class="btn">Request</button>
+						{% else %}
+							<p>Request sent</p>
+						{% endif %}
 						<button type="submit" class="btn">Comment</button>
 					</div>
 				</form>
