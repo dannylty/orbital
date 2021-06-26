@@ -19,7 +19,7 @@
 		{% for t, isPT in tdict.items %}
 			<div class="grid-container-view">
 				<div class="{% if not isPT %}post-info{% else %}pt-info{% endif %}">
-					<p class="post-datetime post-info-p">{{t.created_at}}</p>
+					{% if not isPT %}<p class="post-datetime post-info-p">{{t.created_at}}</p>{% endif %}
 					<div class="edit-delete">
 						{% if user == t.user %}
 							<a href="/thread/{{t.id}}/edit">

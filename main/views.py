@@ -221,8 +221,11 @@ def search(response):
 	Thread.objects.filter(content__icontains=s) |\
 	Thread.objects.filter(tags__icontains=s)
 	tlist = tlist.filter(viewable=True).order_by("-created_at")
+	tdict = {}
 	# We could do something like a relevance rank but probably no need for now.
-	return render(response, "main/view.html", {"tlist":tlist})
+	for t in tlist:
+		tdict[t] = t.isProfileThread()
+	return render(response, "main/view.html", {"tlist":tlist, "tdict":tdict})
 
 
 @login_required(login_url='/loginprompt')
