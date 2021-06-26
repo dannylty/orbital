@@ -4,17 +4,19 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-
-<h3>Edit profile</h3>
-<form style="width: 50%" method="post" action="/edit_profile">
-	{% csrf_token %}
-	{{form|crispy}}
-	<p></p>
-	<div class="input-group mb-3">
-		<div class="input-group-prepend">
-			<button type="submit", name="save" class="btn btn-success">Edit profile</button>
+	<div class="center">
+		<div class="requests">
+			<h3>Edit profile</h3>
+			<form style="width: 50%" method="post" action="/edit_profile">
+				{% csrf_token %}
+				{{form|crispy}}
+				<p></p>
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+						<button type="submit", name="save" class="btn btn-success">Edit profile</button>
+					</div>
+				</div>
+			</form>
 		</div>
 	</div>
-</form>
-
 {% endblock %}

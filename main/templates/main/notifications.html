@@ -3,24 +3,35 @@
 {% block title %}Notifs{% endblock %}
 
 {% block content %}
-	{% for message in messages %}
-		<div class="container-fluid p-0">
-			<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
-				{{ message }}
+	<div class="center">
+		{% for message in messages %}
+			<div class="container-fluid p-0">
+				<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+					{{ message }}
+				</div>
 			</div>
-		</div>
-	{% endfor %}
-
-	<form method="post" action="#">
-		{% csrf_token %}
-		{% for n in nlist %}
-			<ul>
-				<input type="checkbox" name="notif{{n.id}}" value="clicked">
-				<p class="joinchatrequest">{{n.threadjoinrequest.requester}} has requested to join chat for your post:
-				{{n.threadjoinrequest.threadchat}}</p>
-			</ul>
 		{% endfor %}
-		<button type="submit", name="accepted", value="true", class="btn btn-success">Accept</button>
-		<button type="submit", name="declined", value="true", class="btn btn-warning">Decline</button>
-	</form>
+
+		<div class="requests">
+			<h3>Chat requests</h3>
+			<form method="post" action="#">
+				{% csrf_token %}
+				{% for t, notifs in ndict.items %}
+					<hr>
+					<h5 class="requests-post">{{t.threadchat}}</h5>
+					{% for n in notifs %}
+						{% if n.threadjoinrequest.threadchat.thread == t %}
+							<div class='requests-request'>
+								<p class="requests-requester">{{n.threadjoinrequest.requester}}</p>
+								<div class="requests-acceptordelete">
+									<button type="submit", name="accepted{{n.id}}", value="true", class="btn btn-success">Accept</button>
+									<button type="submit", name="declined{{n.id}}", value="true", class="btn btn-warning">Delete</button>
+								</div>
+							</div>
+						{% endif %}
+					{% endfor %}
+				{% endfor %}
+			</form>
+		</div>
+	</div>
 {% endblock %}

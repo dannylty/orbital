@@ -4,22 +4,26 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-	{% for message in messages %}
-		<div class="container-fluid p-0">
-			<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
-				{{ message }}
+	<div class="center">
+		{% for message in messages %}
+			<div class="container-fluid p-0">
+				<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+					{{ message }}
+				</div>
 			</div>
+		{% endfor %}
+		<div class="requests">
+			<div class="">
+				<h3>{{user.userprofile.name}}</h3>
+				<p>Year {{user.userprofile.year}}</p>
+				<p>{{user.userprofile.faculty}}</p>
+				<p>Majoring in {{user.userprofile.major}}</p>
+			</div>
+			<a href="/edit_profile">
+		   		<button class="btn btn-success">Edit Profile</button>
+			</a>
 		</div>
-	{% endfor %}
-	<div class="success">
-		<p>Name: {{user.userprofile.name}}</p>
-		<p>Year: {{user.userprofile.year}}</p>
-		<p>Faculty: {{user.userprofile.faculty}}</p>
-		<p>Major: {{user.userprofile.major}}</p>
 	</div>
-	<a href="/edit_profile">
-   		<button class="btn btn-success">Edit Profile</button>
-	</a>
 	<br></br>
 	<h2>Profile Thread</h2>
 	<p>This is your profile thread that can be viewed by others. Edit the content and set it to visible for people to see your profile thread in their feed.</p>
