@@ -5,28 +5,27 @@
 
 
 {% block content %}
-	<div id="content", name="content", class="main">
-		<div class="row justify-content-center">
-			<div class="col-8">
-				<h3>Create Thread</h3>
-				{% for message in messages %}
-					<div class="container-fluid p-0">
-						<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
-							{{ message }}
-						</div>
-					</div>
-				{% endfor %}
-				<form method="post" action="/create">
-					{% csrf_token %}
-					{{form|crispy}}
-					<div class="input-group mb-3">
-						<div class="input-group-prepend">
-							<button type="submit", name="save" class="btn btn-success">Create</button>
-						</div>
-						{{form.name}}
-					</div>
-				</form>
+	<div class="center">
+		{% for message in messages %}
+			<div class="container-fluid p-0">
+				<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+					{{ message }}
+				</div>
 			</div>
+		{% endfor %}
+
+		<div class="full-info">
+			<h3>New thread</h3>
+			<form method="post" action="/create">
+				{% csrf_token %}
+				{{form|crispy}}
+				<div class="input-group mb-3">
+					<div class="input-group-prepend comment-form">
+						<button type="submit", name="save" class="comment-btns-btn btn">Create</button>
+					</div>
+					{{form.name}}
+				</div>
+			</form>
 		</div>
 	</div>
 {% endblock %}

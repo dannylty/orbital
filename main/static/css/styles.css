@@ -127,20 +127,20 @@ body {
   margin-top: 10px;
 }
 
-.comment-btn {
+.comment-btns {
   background-color: #f0f0f0;
   padding: 10px;
   border-radius: 0 0 5px 5px;
 }
 
-.comment-btn button {
+.comment-btns-btn {
   width: 96px;
   border-radius: 20px;
   color: white;
   background-color: #c06c84;
 }
 
-.comment-btn p {
+.comment-btns p {
   display: inline-block;
   margin-right: 10px;
   margin-bottom: 0;
@@ -201,6 +201,10 @@ body {
 .comments-btn h3 {
   display: inline-block;
   margin-bottom: 0;
+}
+
+.createthreadform {
+
 }
 
 .dropdown {

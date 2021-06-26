@@ -29,15 +29,15 @@
 				<form method="post" action="#">
 					{% csrf_token %}
 					<textarea name="new" placeholder="Thoughts?" maxlength="200"></textarea>
-					<div class="comment-btn">
+					<div class="comment-btns">
 						{% if button_mode %}
-							<button type="submit", name="gochat", value="true", class="btn">Chat</button>
+							<button class="comment-btns-btn btn" type="submit", name="gochat", value="true">Chat</button>
 						{% elif not requested %}
-							<button type="submit", name="requestchat", value="true", class="btn">Request</button>
+							<button class="comment-btns-btn btn" type="submit", name="requestchat", value="true">Request</button>
 						{% else %}
 							<p>Request sent</p>
 						{% endif %}
-						<button type="submit" class="btn">Comment</button>
+						<button class="comment-btns-btn btn" type="submit">Comment</button>
 					</div>
 				</form>
 			</div>
