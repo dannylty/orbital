@@ -1,4 +1,5 @@
 {% extends 'main/base.html' %}
+{% load static %}
 
 {% block title %}Profile{% endblock %}
 
@@ -18,5 +19,13 @@
 	</div>
 	<a href="/edit_profile">
    		<button class="btn btn-success">Edit Profile</button>
+	</a>
+	<br></br>
+	<h2>Profile Thread</h2>
+	<p>This is your profile thread that can be viewed by others. Edit the content and set it to visible for people to see your profile thread in their feed.</p>
+	<p>Title: {{t.title}}</p>
+	<p>Content: {{t.content}}</p>
+	<a href="/edit_profile_thread">
+   		<button class="btn btn-success">Edit Profile Thread</button>
 	</a>
 {% endblock %}

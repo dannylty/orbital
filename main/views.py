@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Thread, Comment, ThreadChat, ThreadJoinRequest
-from .forms import CreateNewThread, EditProfileForm, EditThreadForm
+from .forms import CreateNewThread, EditProfileForm, EditThreadForm, EditProfileThreadForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -10,7 +10,7 @@ from django.contrib import messages
 def home(response):
 	return render(response, "main/home.html", {})
 
-@login_required(login_url='/loginprompt/')
+@login_required(login_url='/loginprompt')
 # Redirects if not logged in. Not a very nice solution.
 def index(response, id):
 	if Thread.objects.filter(id=id).count() == 0:
@@ -18,6 +18,10 @@ def index(response, id):
 		return HttpResponseRedirect("/")
 
 	t = Thread.objects.get(id=id)
+
+	if not t.isViewable():
+		messages.error(response, 'This thread is private.')
+		return HttpResponseRedirect("/")
 
 	button_mode = t.getThreadChat().checkAllow(response.user)
 	already_requested = len(ThreadJoinRequest.objects.filter(threadchat=t.getThreadChat(), requester=response.user)) > 0
@@ -49,13 +53,16 @@ def index(response, id):
 		"is_user":is_user}
 		)
 
-@login_required(login_url='/loginprompt/')
+@login_required(login_url='/loginprompt')
 def editthread(response, id):
 	t = Thread.objects.get(id=id)
 
 	if response.user != t.getUser():
 		messages.error(response, 'You are not the owner of the thread.')
 		return HttpResponseRedirect("/thread/%i" % id)
+
+	if t.isProfileThread():
+		return HttpResponseRedirect("/edit_profile_thread")
 
 	if response.method == "POST":
 		form = EditThreadForm(response.POST, instance=t)
@@ -81,7 +88,7 @@ def editthread(response, id):
 		form = EditThreadForm(instance=t)
 		return render(response, "main/edit_thread.html", {"form":form, "id":id})
 
-@login_required(login_url='/loginprompt/')
+@login_required(login_url='/loginprompt')
 def deletethread(response, id):
 	t = Thread.objects.get(id=id)
 
@@ -93,7 +100,7 @@ def deletethread(response, id):
 	messages.success(response, 'The thread has been deleted!')
 	return HttpResponseRedirect("/")
 
-@login_required(login_url='/loginprompt/')
+@login_required(login_url='/loginprompt')
 def create(response):
 	if response.method == "POST":
 		form = CreateNewThread(response.POST)
@@ -114,22 +121,22 @@ def create(response):
 			response.user.thread_set.create(title=t, content=c, tags=tg, location=loc)
 			messages.success(response, 'New post successfully created!')
 
-		return HttpResponseRedirect("/view")
+		return HttpResponseRedirect("/thread/%i" % Thread.objects.get(title=t, content=c).id)
 
 	else:
 		form = CreateNewThread()
 		return render(response, "main/create.html", {"form":form})
 
-@login_required(login_url='/loginprompt/')
+@login_required(login_url='/loginprompt')
 def view(response):
-	tlist = Thread.objects.all()
+	tlist = Thread.objects.filter(viewable=True).order_by("-created_at")
 	return render(response, "main/view.html", {"tlist":tlist})
 
-@login_required(login_url='/loginprompt/')
+@login_required(login_url='/loginprompt')
 def profile(response):
-	return render(response, "main/profile.html", {})
+	return render(response, "main/profile.html", {"t":response.user.userprofile.thread})
 
-@login_required(login_url='/loginprompt/')
+@login_required(login_url='/loginprompt')
 def editprofile(response):
 	if response.method == "POST":
 		form = EditProfileForm(response.POST, instance=response.user.userprofile)
@@ -144,7 +151,7 @@ def editprofile(response):
 		form = EditProfileForm(instance=response.user.userprofile)
 		return render(response, "main/edit_profile.html", {"form":form})
 
-@login_required(login_url='/loginprompt/')
+@login_required(login_url='/loginprompt')
 def threadchat(response, id):
 	tc = ThreadChat.objects.get(id=id)
 	all_tc = list(set(ThreadChat.objects.all()))
@@ -167,7 +174,7 @@ def threadchat(response, id):
 
 	return render(response, "main/threadchat.html", {"tc":tc, "all_tc":all_tc})
 
-@login_required(login_url='/loginprompt/')
+@login_required(login_url='/loginprompt')
 def notifications(response):
 	nlist = response.user.notifiable_set.all()
 
@@ -180,6 +187,7 @@ def notifications(response):
 
 	return render(response, "main/notifications.html", {"nlist":nlist})
 
+@login_required(login_url='/loginprompt')
 def chatlist(response):
 	all_tc = list(set(ThreadChat.objects.all()))
 	for i in reversed(range(len(all_tc))):
@@ -187,8 +195,30 @@ def chatlist(response):
 			all_tc.remove(all_tc[i])
 	return render(response, "main/chatlist.html", {"all_tc":all_tc})
 
+@login_required(login_url='/loginprompt')
 def search(response):
 	s = response.GET['q']
-	tlist = Thread.objects.filter(title__icontains=s) | Thread.objects.filter(content__icontains=s)
+	tlist = Thread.objects.filter(title__icontains=s) |\
+	Thread.objects.filter(content__icontains=s) |\
+	Thread.objects.filter(tags__icontains=s)
+	tlist = tlist.filter(viewable=True).order_by("-created_at")
 	# We could do something like a relevance rank but probably no need for now.
 	return render(response, "main/view.html", {"tlist":tlist})
+
+
+@login_required(login_url='/loginprompt')
+def editprofilethread(response):
+	t = response.user.userprofile.thread # What is abstraction barrier.
+	if response.method == "POST":
+		form = EditProfileThreadForm(response.POST, instance=t)
+		if form.is_valid():
+			form.save()
+
+			# No need to check for duplicate because we know how to redirect.
+
+			messages.success(response, 'The thread has been updated!')
+		return HttpResponseRedirect("/profile")
+
+	else:
+		form = EditProfileThreadForm(instance=t)
+		return render(response, "main/edit_profile_thread.html", {"form":form})

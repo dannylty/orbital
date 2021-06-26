@@ -43,3 +43,8 @@ class EditThreadForm(forms.ModelForm):
 	class Meta:
 		model = Thread
 		fields = ['title', 'content', 'location']
+
+class EditProfileThreadForm(forms.ModelForm):
+	class Meta:
+		model = Thread
+		fields = ['content', 'viewable']

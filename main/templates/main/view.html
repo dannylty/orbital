@@ -17,33 +17,62 @@
 			<h3>There are no posts available at the moment.</h3>
 		{% endif %}
 		{% for t in tlist %}
-			<div class="grid-container-view">
-				<div class="post-info">
-					<p class="post-datetime">{{t.created_at}}</p>
-					<h3>{{t.title}}</h3>
-					<p>{{t.content}}</p>
-					{% for tag in t.tags %}
-						<div class="tags">
-							{{tag}}
+			{% if t.isProfileThread %}
+				<!-- ADD HERE -->
+				<div class="grid-container-view">
+					<div class="post-info" style="background-color: #ffdbfb">
+						<p class="post-datetime">{{t.created_at}}</p>
+						<h3>{{t.title}}</h3>
+						<p>{{t.content}}</p>
+							<div class="tags">
+								Profile
+							</div>
+						<div class="postedby">
+							<p>Posted by {{t.user}}</p>
 						</div>
-					{% endfor %}
-					<div class="postedby">
-						<p>Posted by {{t.user}}</p>
+					</div>
+					<div class="commentorchat">
+						<a href="/thread/{{t.id}}">
+							<div class="comments-btn">
+								<h3>Comments</h3>
+							</div>
+						</a>
+						<a href="/threadchat/{{t.id}}">
+							<div class="joinchat">
+								<h3>Chat</h3>
+							</div>
+						</a>
 					</div>
 				</div>
-				<div class="commentorchat">
-					<a href="/thread/{{t.id}}">
-						<div class="comments-btn">
-							<h3>Comments</h3>
+			{% else %}
+				<div class="grid-container-view">
+					<div class="post-info">
+						<p class="post-datetime">{{t.created_at}}</p>
+						<h3>{{t.title}}</h3>
+						<p>{{t.content}}</p>
+						{% for tag in t.tags %}
+							<div class="tags">
+								{{tag}}
+							</div>
+						{% endfor %}
+						<div class="postedby">
+							<p>Posted by {{t.user}}</p>
 						</div>
-					</a>
-					<a href="/threadchat/{{t.id}}">
-						<div class="joinchat">
-							<h3>Chat</h3>
-						</div>
-					</a>
+					</div>
+					<div class="commentorchat">
+						<a href="/thread/{{t.id}}">
+							<div class="comments-btn">
+								<h3>Comments</h3>
+							</div>
+						</a>
+						<a href="/threadchat/{{t.id}}">
+							<div class="joinchat">
+								<h3>Chat</h3>
+							</div>
+						</a>
+					</div>
 				</div>
-			</div>
+			{% endif %}
 		{% endfor %}
 	</div>
 {% endblock %}

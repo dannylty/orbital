@@ -9,7 +9,8 @@ class UserProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	name = models.CharField(max_length=50, default='Anonymous', blank=True)
 	year = models.CharField(max_length=10, choices=(('Anonymous', 'Anonymous'),
-		('1', '1'),('2', '2'), ('3', '3'), ('4', '4')), default='anon')
+		('1', '1'),('2', '2'), ('3', '3'), ('4', '4')), default='Anonymous')
+	# thread: user profile thread
 
 	FACULTY_CHOICES = (
 		('Anonymous', 'Anonymous'),
@@ -35,8 +36,6 @@ class UserProfile(models.Model):
 	def saveUserProfile(sender, instance, **kwargs):
 		instance.userprofile.save()
 
-
-
 class Thread(models.Model):
 	LOCATION_CHOICES = (
 		('General', 'General'),
@@ -53,6 +52,27 @@ class Thread(models.Model):
 	location = models.CharField(max_length=30, default='General', choices=LOCATION_CHOICES)
 	tags = models.JSONField(default=list, null=True)
 	created_at = models.DateTimeField(auto_now_add=True)
+	viewable = models.BooleanField(default=True)
+
+	# If this is not null, then this thread is a profile thread.
+	profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, null=True)
+
+	@receiver(post_save, sender=UserProfile)
+	def createProfileThread(sender, instance, created, **kwargs):
+		if created:
+			Thread.objects.create(
+				user=instance.user,
+				title=str(instance.user),
+				profile=instance,
+				viewable=False
+				)
+
+	@receiver(post_save, sender=UserProfile)
+	def saveProfileThread(sender, instance, **kwargs):
+		instance.thread.save()
+
+	def isProfileThread(self):
+		return self.profile != None
 
 	def getUser(self):
 		return self.user
@@ -62,6 +82,9 @@ class Thread(models.Model):
 
 	def __str__(self):
 		return self.title
+
+	def isViewable(self):
+		return self.viewable
 
 	class Meta:
 		unique_together = (("title", "content"),)
