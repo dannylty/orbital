@@ -318,7 +318,7 @@ body {
   padding: 10px 20px;
 }
 
-.post-info p {
+.post-info-p {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -335,6 +335,14 @@ body {
 
 .postedby p {
   margin-bottom: 0;
+}
+
+.pt-info {
+  background-color: #D796B4;
+  border-radius: 5px 0 0 5px;
+  height: 100%;
+  color: #707070;
+  padding: 10px 20px;
 }
 
 .replyform {

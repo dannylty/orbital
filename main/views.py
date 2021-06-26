@@ -130,7 +130,10 @@ def create(response):
 @login_required(login_url='/loginprompt')
 def view(response):
 	tlist = Thread.objects.filter(viewable=True).order_by("-created_at")
-	return render(response, "main/view.html", {"tlist":tlist})
+	tdict = {}
+	for t in tlist:
+		tdict[t] = t.isProfileThread()
+	return render(response, "main/view.html", {"tlist":tlist, "tdict":tdict})
 
 @login_required(login_url='/loginprompt')
 def profile(response):

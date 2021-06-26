@@ -16,10 +16,10 @@
 		{% if not tlist %}
 			<img class="suchempty" src="{% static 'images/suchempty.jpg' %}" alt="Such empty. Much wow.">
 		{% endif %}
-		{% for t in tlist %}
+		{% for t, isPT in tdict.items %}
 			<div class="grid-container-view">
-				<div class="post-info">
-					<p class="post-datetime">{{t.created_at}}</p>
+				<div class="{% if not isPT %}post-info{% else %}pt-info{% endif %}">
+					<p class="post-datetime post-info-p">{{t.created_at}}</p>
 					<div class="edit-delete">
 						{% if user == t.user %}
 							<a href="/thread/{{t.id}}/edit">
@@ -31,7 +31,7 @@
 						{% endif %}
 					</div>
 					<h3 class="{% if not user == t.user %}post-info-h3{% endif %}">{{t.title}}</h3>
-					<p>{{t.content}}</p>
+					<p class="post-info-p">{{t.content}}</p>
 					{% for tag in t.tags %}
 						<div class="tags">
 							{{tag}}
