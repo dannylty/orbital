@@ -40,6 +40,7 @@ class EditThreadForm(forms.ModelForm):
 	)
 
 	tags = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=TAG_CHOICES, required=False)
+	content = forms.CharField(label="Content", max_length=1000, widget=forms.Textarea)
 	class Meta:
 		model = Thread
 		fields = ['title', 'content', 'location']

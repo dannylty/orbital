@@ -14,4 +14,12 @@ if __name__ == "__main__":
 	for file in os.listdir("main/migrations/__pycache__"):
 		os.remove(os.path.join("main/migrations/__pycache__", file))
 
+	for file in os.listdir("main/__pycache__"):
+		if file != "__init__.cpython-39":
+			os.remove(os.path.join("main/__pycache__", file))
+
+	for file in os.listdir("orbital/__pycache__"):
+		if file != "__init__.cpython-39":
+			os.remove(os.path.join("orbital/__pycache__", file))
+
 print("Removal complete")
