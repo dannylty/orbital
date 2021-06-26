@@ -21,7 +21,8 @@ def index(response, id):
 
 	button_mode = t.getThreadChat().checkAllow(response.user)
 	already_requested = len(ThreadJoinRequest.objects.filter(threadchat=t.getThreadChat(), requester=response.user)) > 0
-
+	is_user = 1 if response.user == t.getUser() else 0
+	
 	if response.method == "POST":
 		if response.POST.get("gochat"):
 			return HttpResponseRedirect("/threadchat/%i" % t.getThreadChat().id)
@@ -44,7 +45,8 @@ def index(response, id):
 		{"t":t,
 		"button_mode":button_mode,
 		"len_list":len(t.getThreadChat().user_list.all()) + 1,
-		"requested":already_requested}
+		"requested":already_requested,
+		"is_user":is_user}
 		)
 
 @login_required(login_url='/loginprompt/')
