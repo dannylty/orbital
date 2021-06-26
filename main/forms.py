@@ -30,3 +30,16 @@ class EditProfileForm(forms.ModelForm):
 	class Meta:
 		model = UserProfile
 		fields = ['name', 'year', 'faculty', 'major']
+
+class EditThreadForm(forms.ModelForm):
+	TAG_CHOICES = (
+		('Chill', 'Chill'),
+		('General','General'),
+		('Food and Drinks', 'Food and Drinks'),
+		('Module','Module'),
+	)
+
+	tags = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=TAG_CHOICES, required=False)
+	class Meta:
+		model = Thread
+		fields = ['title', 'content', 'location']

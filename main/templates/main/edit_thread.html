@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Edit Thread{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h3>Edit thread</h3>
+<form style="width: 50%" method="post" action="/thread/{{id}}/edit">
+	{% csrf_token %}
+	{{form|crispy}}
+	<p></p>
+	<div class="input-group mb-3">
+		<div class="input-group-prepend">
+			<button type="submit", name="save" class="btn btn-success">Edit thread</button>
+		</div>
+	</div>
+</form>
+
+{% endblock %}

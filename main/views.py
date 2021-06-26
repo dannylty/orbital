@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Thread, Comment, ThreadChat, ThreadJoinRequest
-from .forms import CreateNewThread, EditProfileForm
+from .forms import CreateNewThread, EditProfileForm, EditThreadForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -13,25 +13,29 @@ def home(response):
 @login_required(login_url='/loginprompt/')
 # Redirects if not logged in. Not a very nice solution.
 def index(response, id):
+	if Thread.objects.filter(id=id).count() == 0:
+		messages.error(response, 'This thread does not exist.')
+		return HttpResponseRedirect("/")
+
 	t = Thread.objects.get(id=id)
 
 	button_mode = t.getThreadChat().checkAllow(response.user)
 	already_requested = len(ThreadJoinRequest.objects.filter(threadchat=t.getThreadChat(), requester=response.user)) > 0
 
 	if response.method == "POST":
-		if response.POST.get("new"):
-			txt = response.POST.get("new")
-			if len(txt) > 0:
-				t.comment_set.create(user=response.user, content=txt)
-			else:
-				print("error: invalid length")
-		elif response.POST.get("gochat"):
+		if response.POST.get("gochat"):
 			return HttpResponseRedirect("/threadchat/%i" % t.getThreadChat().id)
 		elif response.POST.get("requestchat"):
 			if len(ThreadJoinRequest.objects.filter(threadchat=t.getThreadChat(), requester=response.user)) > 0:
 				print("warning: already requested")
 			else:
 				t.getThreadChat().threadjoinrequest_set.create(requester=response.user, requestee=t.user)
+		elif response.POST.get("new"):
+			txt = response.POST.get("new")
+			if len(txt) > 0:
+				t.comment_set.create(user=response.user, content=txt)
+			else:
+				print("error: invalid length")
 		else:
 			print("error: invalid POST")
 		return HttpResponseRedirect("/thread/%i" % id)
@@ -44,15 +48,60 @@ def index(response, id):
 		)
 
 @login_required(login_url='/loginprompt/')
+def editthread(response, id):
+	t = Thread.objects.get(id=id)
+
+	if response.user != t.getUser():
+		messages.error(response, 'You are not the owner of the thread.')
+		return HttpResponseRedirect("/thread/%i" % id)
+
+	if response.method == "POST":
+		form = EditThreadForm(response.POST, instance=t)
+		if form.is_valid():
+			tt = form.cleaned_data["title"]
+			c = form.cleaned_data["content"]
+
+			if Thread.objects.filter(title=tt, content=c).count() > 1:
+				print("error: already exists")
+				messages.error(response, 'This post already exists. Please try again with different title/content.')
+				return HttpResponseRedirect("#")
+
+			t.title = tt
+			t.content = c
+			t.location = form.cleaned_data["location"]
+			t.tags = form.cleaned_data["tags"]
+			t.save()
+
+			messages.success(response, 'The thread has been updated!')
+		return HttpResponseRedirect("/thread/%i" % id)
+
+	else:
+		form = EditThreadForm(instance=t)
+		return render(response, "main/edit_thread.html", {"form":form, "id":id})
+
+@login_required(login_url='/loginprompt/')
+def deletethread(response, id):
+	t = Thread.objects.get(id=id)
+
+	if response.user != t.getUser():
+		messages.error(response, 'You are not the owner of the thread.')
+		return HttpResponseRedirect("/thread/%i" % id)
+
+	t.delete()
+	messages.success(response, 'The thread has been deleted!')
+	return HttpResponseRedirect("/")
+
+@login_required(login_url='/loginprompt/')
 def create(response):
 	if response.method == "POST":
 		form = CreateNewThread(response.POST)
 
 		if form.is_valid():
-			print(response.POST)
+#			print(response.POST)
 			t = form.cleaned_data["title"]
 			c = form.cleaned_data["content"]
 			tg = form.cleaned_data["tags"]
+			loc = form.cleaned_data["location"]
 
 			# Require a check cause redirection function filters using title and content.
 			if Thread.objects.filter(title=t, content=c).count() > 0:
@@ -60,7 +109,7 @@ def create(response):
 				messages.error(response, 'This post already exists. Please try again with different title/content.')
 				return render(response, "main/create.html", {"form":form})
 
-			response.user.thread_set.create(title=t, content=c, tags=tg)
+			response.user.thread_set.create(title=t, content=c, tags=tg, location=loc)
 			messages.success(response, 'New post successfully created!')
 
 		return HttpResponseRedirect("/view")
@@ -92,7 +141,6 @@ def editprofile(response):
 	else:
 		form = EditProfileForm(instance=response.user.userprofile)
 		return render(response, "main/edit_profile.html", {"form":form})
-	return render(response, "main/edit_profile.html", {})
 
 @login_required(login_url='/loginprompt/')
 def threadchat(response, id):

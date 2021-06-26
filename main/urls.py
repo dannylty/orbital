@@ -14,4 +14,6 @@ path("threadchat/<int:id>", views.threadchat, name="threadchat"),
 path("notifications", views.notifications, name="notifications"),
 path("chatlist", views.chatlist, name="chatlist"),
 path("search", views.search, name="search"),
+path("thread/<int:id>/edit", views.editthread, name="editthread"),
+path("thread/<int:id>/delete", views.deletethread, name="deletethread"),
 ]

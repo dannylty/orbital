@@ -38,11 +38,20 @@ class UserProfile(models.Model):
 
 
 class Thread(models.Model):
+	LOCATION_CHOICES = (
+		('General', 'General'),
+		('COM','Computing'),
+		('KR MRT', 'KR MRT'),
+		('SCI','SCI'),
+		('BIZ', 'BIZ'),
+		('WTV', 'WTV')
+	)
+
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	title = models.CharField(max_length=100, default='', blank=True)
 	content = models.CharField(max_length=1000, default='', blank=True)
+	location = models.CharField(max_length=30, default='General', choices=LOCATION_CHOICES)
 	tags = models.JSONField(default=list, null=True)
-	location = models.CharField(max_length=30, default='General'),
 	created_at = models.DateTimeField(auto_now_add=True)
 
 	def getUser(self):
