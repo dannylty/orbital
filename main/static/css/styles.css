@@ -393,6 +393,10 @@ body {
   right: 0;
 }
 
+.suchempty {
+  width: 100%;
+}
+
 .tags {
   display: inline-block;
   border-style: solid;

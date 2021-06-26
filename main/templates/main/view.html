@@ -14,7 +14,7 @@
 			</div>
 		{% endfor %}
 		{% if not tlist %}
-			<h3>There are no posts available at the moment.</h3>
+			<img class="suchempty" src="{% static 'images/suchempty.jpg' %}" alt="Such empty. Much wow.">
 		{% endif %}
 		{% for t in tlist %}
 			<div class="grid-container-view">
