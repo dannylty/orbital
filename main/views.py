@@ -22,7 +22,7 @@ def index(response, id):
 	button_mode = t.getThreadChat().checkAllow(response.user)
 	already_requested = len(ThreadJoinRequest.objects.filter(threadchat=t.getThreadChat(), requester=response.user)) > 0
 	is_user = 1 if response.user == t.getUser() else 0
-	
+
 	if response.method == "POST":
 		if response.POST.get("gochat"):
 			return HttpResponseRedirect("/threadchat/%i" % t.getThreadChat().id)
@@ -54,7 +54,7 @@ def editthread(response, id):
 	t = Thread.objects.get(id=id)
 
 	if response.user != t.getUser():
-		messages.error(response, 'You are not the owner of the thread.')
+		messages.error(response, 'You are not the owner of this thread.')
 		return HttpResponseRedirect("/thread/%i" % id)
 
 	if response.method == "POST":
@@ -65,7 +65,7 @@ def editthread(response, id):
 
 			if Thread.objects.filter(title=tt, content=c).count() > 1:
 				print("error: already exists")
-				messages.error(response, 'This post already exists. Please try again with different title/content.')
+				messages.error(response, 'This thread already exists. Please try again with different title/content.')
 				return HttpResponseRedirect("#")
 
 			t.title = tt
@@ -86,7 +86,7 @@ def deletethread(response, id):
 	t = Thread.objects.get(id=id)
 
 	if response.user != t.getUser():
-		messages.error(response, 'You are not the owner of the thread.')
+		messages.error(response, 'You are not the owner of this thread.')
 		return HttpResponseRedirect("/thread/%i" % id)
 
 	t.delete()
@@ -108,11 +108,11 @@ def create(response):
 			# Require a check cause redirection function filters using title and content.
 			if Thread.objects.filter(title=t, content=c).count() > 0:
 				print("error: already exists")
-				messages.error(response, 'This post already exists. Please try again with different title/content.')
+				messages.error(response, 'This thread already exists. Please try again with different title/content.')
 				return render(response, "main/create.html", {"form":form})
 
 			response.user.thread_set.create(title=t, content=c, tags=tg, location=loc)
-			messages.success(response, 'New post successfully created!')
+			messages.success(response, 'New thread successfully created!')
 
 		return HttpResponseRedirect("/view")
 
@@ -170,15 +170,31 @@ def threadchat(response, id):
 @login_required(login_url='/loginprompt/')
 def notifications(response):
 	nlist = response.user.notifiable_set.all()
+	tlist = response.user.thread_set.all()
+	ndict = {}
+
+	# Populating ndict with {Thread: ThreadJoinRequestNotification} pairs, then
+	# removing threads with no requests
+	for t in tlist:
+		ndict[t] = None
+		for n in nlist:
+			if n.threadjoinrequest.threadchat.thread == t:
+				if ndict[t] == None:
+					ndict[t] = [n]
+				else:
+					ndict[t].append(n)
+		if ndict[t] == None:
+			ndict.pop(t, None)
 
 	if response.method == "POST":
-		accepted = response.POST.get("accepted") == "true"
 		for n in nlist:
-			if response.POST.get("notif" + str(n.id)) == "clicked":
-				n.action(accepted)
+			if response.POST.get("accepted" + str(n.id)) == "true":
+				n.action(True)
+			elif response.POST.get("declined" + str(n.id)) == "true":
+				n.action(False)
 		return HttpResponseRedirect("/notifications")
 
-	return render(response, "main/notifications.html", {"nlist":nlist})
+	return render(response, "main/notifications.html", {"ndict":ndict})
 
 def chatlist(response):
 	all_tc = list(set(ThreadChat.objects.all()))

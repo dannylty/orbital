@@ -203,8 +203,8 @@ body {
   margin-bottom: 0;
 }
 
-.createthreadform {
-
+.delete {
+  height: 20px;
 }
 
 .dropdown {
@@ -227,6 +227,15 @@ body {
 
 .dropdown:hover .dropdown-content {
   display: block;
+}
+
+.edit {
+  height: 20px;
+}
+
+.edit-delete {
+  width: 100%;
+  text-align: right;
 }
 
 .full-info {
@@ -259,10 +268,6 @@ body {
 
 .joinchat h3 {
   display: inline-block;
-}
-
-.joinchatrequest {
-  display: inline;
 }
 
 .login {
@@ -301,6 +306,8 @@ body {
   font-size: 0.7rem;
   margin-bottom: 0;
   opacity: 70%;
+  display: inline-block;
+  float:left;
 }
 
 .post-info {
@@ -311,14 +318,14 @@ body {
   padding: 10px 20px;
 }
 
-.post-info h3 {
-  display: inline-block;
-}
-
 .post-info p {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.post-info-h3 {
+  margin-top: 20px;
 }
 
 .postedby {
@@ -338,6 +345,32 @@ body {
 
 .replyform input {
   width: 100%;
+}
+
+.requests {
+  background-color: white;
+  border-radius: 5px;
+  height: 100%;
+  color: #707070;
+  padding: 10px 20px;
+}
+
+.requests-acceptordelete {
+  text-align: right;
+}
+
+.requests-post {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.requests-request {
+  margin-bottom: 20px;
+}
+
+.requests-requester {
+  display: inline-block;
+  float: left;
 }
 
 .scrollable-chats {

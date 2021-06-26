@@ -1,6 +1,6 @@
 <!-- FULL POST INFO -->
 {% extends 'main/base.html' %}
-
+{% load static %}
 {% block title %}View Thread{% endblock %}
 
 {% block content %}
@@ -15,7 +15,17 @@
 
 		<div class="full-info">
 			<p class="post-datetime">{{t.created_at}}</p>
-			<h3>{{t.title}}</h3>
+			<div class="edit-delete">
+				{% if is_user %}
+					<a href="/thread/{{t.id}}/edit">
+						<img class="edit" src="{% static 'images/more.svg' %}" alt="edit">
+					</a>
+					<a href="/thread/{{t.id}}/delete">
+						<img class="delete" src="{% static 'images/delete.svg' %}" alt="delete">
+					</a>
+				{% endif %}
+			</div>
+			<h3 class="{% if not user == t.user %}post-info-h3{% endif %}">{{t.title}}</h3>
 			<p>{{t.content}}</p>
 			{% for tag in t.tags %}
 				<div class="tags">
