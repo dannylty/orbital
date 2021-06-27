@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Thread, Comment, ThreadChat, ThreadJoinRequest
+from .models import Thread, Comment, ThreadChat, ThreadJoinRequest, UserProfile
 from .forms import CreateNewThread, EditProfileForm, EditThreadForm, EditProfileThreadForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -136,8 +136,11 @@ def view(response):
 	return render(response, "main/view.html", {"tlist":tlist, "tdict":tdict})
 
 @login_required(login_url='/loginprompt')
-def profile(response):
-	return render(response, "main/profile.html", {"t":response.user.userprofile.thread})
+def profile(response, id):
+	this_userprofile = UserProfile.objects.get(id=id)
+	is_curr_user = id == response.user.id
+	return render(response, "main/profile.html", {"t":response.user.userprofile.thread,
+		"this_userprofile":this_userprofile, "is_curr_user":is_curr_user})
 
 @login_required(login_url='/loginprompt')
 def editprofile(response):

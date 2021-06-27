@@ -12,19 +12,33 @@
 				</div>
 			</div>
 		{% endfor %}
+
 		<div class="requests">
-			<h3>My profile</h3>
+			{% if is_curr_user %}
+				<h3>My profile</h3>
+				<hr>
+				<div class="">
+					<h4>{{user.userprofile.name}}</h4>
+					<p>Year {{user.userprofile.year}}</p>
+					<p>{{user.userprofile.faculty}}</p>
+					<p>Majoring in {{user.userprofile.major}}</p>
+				</div>
+				<a href="/edit_profile">
+			   		<button class="comment-btns-btn btn">Edit</button>
+				</a>
+			{% else %}
+				<h3>{{this_userprofile.user}}'s profile</h3>
+				<hr>
+				<div class="">
+					<h4>{{this_userprofile.name}}</h4>
+					<p>Year {{this_userprofile.year}}</p>
+					<p>{{this_userprofile.faculty}}</p>
+					<p>Majoring in {{this_userprofile.major}}</p>
+				</div>
+			{% endif %}
+
 			<hr>
-			<div class="">
-				<h4>{{user.userprofile.name}}</h4>
-				<p>Year {{user.userprofile.year}}</p>
-				<p>{{user.userprofile.faculty}}</p>
-				<p>Majoring in {{user.userprofile.major}}</p>
-			</div>
-			<a href="/edit_profile">
-		   		<button class="comment-btns-btn btn">Edit</button>
-			</a>
-			<hr>
+
 			<h3>Profile Thread</h3>
 			<p>This is your profile thread that can be viewed by others. Edit the content
 				and set it to visible for people to see your profile thread in their feed.</p>
