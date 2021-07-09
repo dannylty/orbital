@@ -152,7 +152,7 @@ def editprofile(response):
 			form.major = form.major
 			form.save()
 			messages.success(response, 'Your profile has been updated!')
-		return HttpResponseRedirect("/profile")
+		return HttpResponseRedirect("/profile/%i" % response.user.userprofile.id)
 	else:
 		form = EditProfileForm(instance=response.user.userprofile)
 		return render(response, "main/edit_profile.html", {"form":form})
@@ -242,7 +242,7 @@ def editprofilethread(response):
 			# No need to check for duplicate because we know how to redirect.
 
 			messages.success(response, 'The thread has been updated!')
-		return HttpResponseRedirect("/profile")
+		return HttpResponseRedirect("/profile/%i" % response.user.userprofile.id)
 
 	else:
 		form = EditProfileThreadForm(instance=t)
