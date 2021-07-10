@@ -38,7 +38,7 @@
 			{% endif %}
 
 			<hr>
-
+			{% if is_curr_user %}
 			<h3>Profile Thread</h3>
 			<p>This is your profile thread that can be viewed by others. Edit the content
 				and set it to visible for people to see your profile thread in their feed.</p>
@@ -47,6 +47,7 @@
 			<a href="/edit_profile_thread">
 		   		<button class="comment-btns-btn btn">Edit</button>
 			</a>
+			{% endif %}
 		</div>
 	</div>
 {% endblock %}
