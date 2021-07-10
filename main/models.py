@@ -62,7 +62,7 @@ class Thread(models.Model):
 		if created:
 			Thread.objects.create(
 				user=instance.user,
-				title=str(instance.user),
+				title=str(instance.user) + "'s profile thread",
 				profile=instance,
 				viewable=False
 				)
@@ -89,6 +89,9 @@ class Thread(models.Model):
 	class Meta:
 		unique_together = (("title", "content"),)
 
+	def getRelevance(self, user):
+		pass
+
 class Postable(PolymorphicModel):
 	"""Abstract class for postable content."""
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -110,6 +113,7 @@ class ThreadChat(models.Model):
 	def createThreadChat(sender, instance, created, **kwargs):
 		if created:
 			ThreadChat.objects.create(thread=instance)
+			instance.threadchat.addUser(instance.user)
 
 	@receiver(post_save, sender=Thread)
 	def saveThreadChat(sender, instance, **kwargs):
@@ -188,3 +192,6 @@ class ThreadJoinRequestNotification(Notifiable):
 			self.threadjoinrequest.addUser()
 		self.threadjoinrequest.delete()
 		# this will execute CASCADE and this notification gets auto-deleted
+
+class PrivateMessageChat(models.Model):
+	user = models.ManyToManyField(User)

@@ -160,10 +160,7 @@ def editprofile(response):
 @login_required(login_url='/loginprompt')
 def threadchat(response, id):
 	tc = ThreadChat.objects.get(id=id)
-	all_tc = list(set(ThreadChat.objects.all()))
-	for i in reversed(range(len(all_tc))):
-		if not all_tc[i].checkAllow(response.user):
-			all_tc.remove(all_tc[i])
+	all_tc = response.user.threadchat_set.all()
 	if not tc.checkAllow(response.user):
 		messages.error(response, 'This chat is private, send a request to join the group.')
 		return HttpResponseRedirect("/thread/%i" % id)
@@ -211,11 +208,7 @@ def notifications(response):
 
 @login_required(login_url='/loginprompt')
 def chatlist(response):
-	all_tc = list(set(ThreadChat.objects.all()))
-	for i in reversed(range(len(all_tc))):
-		if not all_tc[i].checkAllow(response.user):
-			all_tc.remove(all_tc[i])
-	return render(response, "main/chatlist.html", {"all_tc":all_tc})
+	return render(response, "main/chatlist.html", {"all_tc":response.user.threadchat_set.all()})
 
 @login_required(login_url='/loginprompt')
 def search(response):
