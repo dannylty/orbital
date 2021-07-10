@@ -113,7 +113,8 @@ class ThreadChat(models.Model):
 	def createThreadChat(sender, instance, created, **kwargs):
 		if created:
 			ThreadChat.objects.create(thread=instance)
-			instance.threadchat.addUser(instance.user)
+			if not instance.isProfileThread():
+				instance.threadchat.addUser(instance.user)
 
 	@receiver(post_save, sender=Thread)
 	def saveThreadChat(sender, instance, **kwargs):
