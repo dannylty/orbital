@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Thread, Comment, ThreadChat, ThreadJoinRequest, UserProfile
+from .models import Thread, Comment, ThreadChat, ThreadJoinRequest, UserProfile, PrivateMessageChat
 from .forms import CreateNewThread, EditProfileForm, EditThreadForm, EditProfileThreadForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib import messages
 
 # Create your views here.
@@ -137,6 +138,34 @@ def view(response):
 
 @login_required(login_url='/loginprompt')
 def profile(response, id):
+	if response.method == "POST":
+		# wants to send private message
+		if response.POST.get("pm"):
+			print("received")
+			this_user = UserProfile.objects.get(id=id).user
+
+			first_set = response.user.pmuser1_set.filter(user2=this_user)
+			second_set = response.user.pmuser2_set.filter(user1=this_user)
+			chat_post = first_set.union(second_set)[0]
+
+			# checks no current PrivateMessageChat instance between these 2 users
+			if len(chat_post) == 0:
+				PrivateMessageChat.objects.create(user1=response.user, user2=this_user)
+				chat_post = response.user.pmuser1_set.filter(user2=this_user)[0]
+
+			# TO DO
+			# TO DO
+			# TO DO
+			# TO DO
+			# TO DO
+
+			# Add rendering here.
+			# return render(response, ...
+
+		else:
+			print("Unknown POST")
+
+
 	this_userprofile = UserProfile.objects.get(id=id)
 	is_curr_user = id == response.user.id
 	return render(response, "main/profile.html", {"t":response.user.userprofile.thread,
@@ -147,9 +176,7 @@ def editprofile(response):
 	if response.method == "POST":
 		form = EditProfileForm(response.POST, instance=response.user.userprofile)
 		if form.is_valid():
-			m = form.cleaned_data["major"]
 			form = form.save(commit=False)
-			form.major = form.major
 			form.save()
 			messages.success(response, 'Your profile has been updated!')
 		return HttpResponseRedirect("/profile/%i" % response.user.userprofile.id)
@@ -180,21 +207,6 @@ def threadchat(response, id):
 @login_required(login_url='/loginprompt')
 def notifications(response):
 	nlist = response.user.notifiable_set.all()
-	tlist = response.user.thread_set.all()
-	ndict = {}
-
-	# Populating ndict with {Thread: ThreadJoinRequestNotification} pairs, then
-	# removing threads with no requests
-	for t in tlist:
-		ndict[t] = None
-		for n in nlist:
-			if n.threadjoinrequest.threadchat.thread == t:
-				if ndict[t] == None:
-					ndict[t] = [n]
-				else:
-					ndict[t].append(n)
-		if ndict[t] == None:
-			ndict.pop(t, None)
 
 	if response.method == "POST":
 		for n in nlist:
@@ -204,7 +216,7 @@ def notifications(response):
 				n.action(False)
 		return HttpResponseRedirect("/notifications")
 
-	return render(response, "main/notifications.html", {"ndict":ndict})
+	return render(response, "main/notifications.html", {"nlist":nlist})
 
 @login_required(login_url='/loginprompt')
 def chatlist(response):

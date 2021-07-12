@@ -13,23 +13,18 @@
 		{% endfor %}
 
 		<div class="requests">
-			<h3>Chat requests</h3>
 			<form method="post" action="#">
 				{% csrf_token %}
-				{% for t, notifs in ndict.items %}
-					<hr>
-					<h5 class="requests-post">{{t.threadchat}}</h5>
-					{% for n in notifs %}
-						{% if n.threadjoinrequest.threadchat.thread == t %}
-							<div class='requests-request'>
-								<p class="requests-requester">{{n.threadjoinrequest.requester}}</p>
-								<div class="requests-acceptordelete">
-									<button type="submit", name="accepted{{n.id}}", value="true", class="btn btn-success">Accept</button>
-									<button type="submit", name="declined{{n.id}}", value="true", class="btn btn-warning">Delete</button>
-								</div>
-							</div>
-						{% endif %}
-					{% endfor %}
+				{% for n in nlist %}
+					<hr>{{n.created_at}}
+					<h5 class="requests-post">{{n.getContent}}</h5>
+					<div class='requests-request'>
+						<p class="requests-requester">{{n.getSource}}</p>
+						<div class="requests-acceptordelete">
+							<button type="submit", name="accepted{{n.id}}", value="true", class="btn btn-success">Accept</button>
+							<button type="submit", name="declined{{n.id}}", value="true", class="btn btn-warning">Delete</button>
+						</div>
+					</div>
 				{% endfor %}
 			</form>
 		</div>

@@ -89,7 +89,11 @@ class Thread(models.Model):
 	class Meta:
 		unique_together = (("title", "content"),)
 
+	def getTitle(self):
+		return self.title
+
 	def getRelevance(self, user):
+		# TO DO
 		pass
 
 class Postable(PolymorphicModel):
@@ -132,12 +136,25 @@ class ThreadChat(models.Model):
 		self.user_list.add(u)
 		self.save()
 
-	# User finds thread and requests to join.
-	def requestUser(self, u):
-		pass
+	def getThreadTitle(self):
+		return self.thread.getTitle()
 
 class ChatPost(Postable):
 	threadchat = models.ForeignKey(ThreadChat, on_delete=models.CASCADE)
+
+class PrivateMessageChat(models.Model):
+	"""
+	To find if there is a pm chat created between users A and B, we need to check
+	both cases of user1 = A && user2 = B and user2 = A && user1 = B.
+
+	For instance, we do A.pmuser1_set.filter(user2=B) + A.pmuser2_set.filter(user1=B)
+	to find if a chat between A and B exists.
+	"""
+	user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name="pmuser1_set")
+	user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name="pmuser2_set")
+
+class PrivateMessagePost(Postable):
+	pmchat = models.ForeignKey(PrivateMessageChat, on_delete=models.CASCADE)
 
 class ThreadJoinRequest(models.Model):
 	"""Proxy model that represents an add-to-chat request.
@@ -163,6 +180,9 @@ class ThreadJoinRequest(models.Model):
 	def __str__(self):
 		return str(self.requester) + "-" + str(self.threadchat)
 
+	def getThreadTitle(self):
+		return self.threadchat.getThreadTitle()
+
 class Notifiable(PolymorphicModel):
 	"""Abstract class for notifications."""
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -173,6 +193,13 @@ class Notifiable(PolymorphicModel):
 
 	def action(self, accepted):
 	# Override this method
+		pass
+
+	def getContent(self):
+	# Override this method
+		pass
+
+	def getSource(self):
 		pass
 
 class ThreadJoinRequestNotification(Notifiable):
@@ -194,5 +221,9 @@ class ThreadJoinRequestNotification(Notifiable):
 		self.threadjoinrequest.delete()
 		# this will execute CASCADE and this notification gets auto-deleted
 
-class PrivateMessageChat(models.Model):
-	user = models.ManyToManyField(User)
+	def getSource(self):
+		return self.threadjoinrequest.requester
+
+	def getContent(self):
+		return "Threadchat Join Request: " + self.threadjoinrequest.getThreadTitle()
+
