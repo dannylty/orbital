@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from polymorphic.models import PolymorphicModel
+import string
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -92,8 +93,32 @@ class Thread(models.Model):
 	def getTitle(self):
 		return self.title
 
+	@staticmethod
+	def getJaccard(a, b):
+		"""
+		Computes similarity between 2 sets.
+		a and b are sets. Use set(mylist).
+		"""
+		c = a.intersection(b)
+		return float(len(c)) / (len(a) + len(b) - len(c))
+
+	def getSimilarlityWithOtherThread(self, other):
+		seta = set((self.content + ' ' + self.title)
+			.translate(str.maketrans('', '', string.punctuation))
+			.split(' '))
+		setb = set((other.content + ' ' + other.title)
+			.translate(str.maketrans('', '', string.punctuation))
+			.split(' '))
+		if '' in seta:
+			seta.remove('')
+		if '' in setb:
+			setb.remove('')
+
+		print(seta, setb)
+		return Thread.getJaccard(seta, setb)
+
 	def getRelevance(self, user):
-		# TO DO
+		
 		pass
 
 class Postable(PolymorphicModel):
