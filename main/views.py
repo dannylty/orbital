@@ -130,7 +130,21 @@ def create(response):
 
 @login_required(login_url='/loginprompt')
 def view(response):
+	if response.GET.get("sortby") == "relevance":
+		response.user.userprofile.view_chronological = False
+		response.user.save()
+	elif response.GET.get("sortby") == "chronological":
+		response.user.userprofile.view_chronological = True
+		response.user.save()
+
 	tlist = Thread.objects.filter(viewable=True).order_by("-created_at")
+	if not response.user.userprofile.view_chronological:
+
+		corpus = response.user.userprofile.getCorpus()
+		print(corpus)
+		tlist = sorted(tlist, key=lambda x: x.getRelevance(response.user, corpus), reverse=True)
+		# print(tlist)
+
 	tdict = {}
 	for t in tlist:
 		tdict[t] = t.isProfileThread()

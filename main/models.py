@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from polymorphic.models import PolymorphicModel
-import string
+from datetime import datetime
+import yake # for keyword extraction
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -11,7 +12,7 @@ class UserProfile(models.Model):
 	name = models.CharField(max_length=50, default='Anonymous', blank=True)
 	year = models.CharField(max_length=10, choices=(('Anonymous', 'Anonymous'),
 		('1', '1'),('2', '2'), ('3', '3'), ('4', '4')), default='Anonymous')
-	# thread: user profile thread
+	view_chronological = models.BooleanField(default=True)
 
 	FACULTY_CHOICES = (
 		('Anonymous', 'Anonymous'),
@@ -37,6 +38,20 @@ class UserProfile(models.Model):
 	def saveUserProfile(sender, instance, **kwargs):
 		instance.userprofile.save()
 
+	def getCorpus(self):
+		"""
+		Returns all the text from title of content of user's threads
+		excluding their profile thread. Meant to be used to calculate
+		relevance.
+		Uses latest 10 threads in generating corpus.
+		"""
+		NUM_THREADS = 10
+		corpus = ""
+		for t in self.user.thread_set.order_by("-created_at")[:min(NUM_THREADS, len(self.user.thread_set.all()))]:
+			if not t.isProfileThread():
+				corpus += str(t) + " "
+		return corpus
+
 class Thread(models.Model):
 	LOCATION_CHOICES = (
 		('General', 'General'),
@@ -57,6 +72,9 @@ class Thread(models.Model):
 
 	# If this is not null, then this thread is a profile thread.
 	profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, null=True)
+
+	# Keyword extractor for relevance metric
+	KW_EXTRACTOR = yake.KeywordExtractor(lan="en", n=1, dedupLim=0.9, top=10, features=None)
 
 	@receiver(post_save, sender=UserProfile)
 	def createProfileThread(sender, instance, created, **kwargs):
@@ -82,7 +100,7 @@ class Thread(models.Model):
 		return self.threadchat
 
 	def __str__(self):
-		return self.title
+		return self.title + " " + self.content
 
 	def isViewable(self):
 		return self.viewable
@@ -100,26 +118,58 @@ class Thread(models.Model):
 		a and b are sets. Use set(mylist).
 		"""
 		c = a.intersection(b)
+		print("Intersection:", c)
 		return float(len(c)) / (len(a) + len(b) - len(c))
 
-	def getSimilarlityWithOtherThread(self, other):
-		seta = set((self.content + ' ' + self.title)
-			.translate(str.maketrans('', '', string.punctuation))
-			.split(' '))
-		setb = set((other.content + ' ' + other.title)
-			.translate(str.maketrans('', '', string.punctuation))
-			.split(' '))
-		if '' in seta:
-			seta.remove('')
-		if '' in setb:
-			setb.remove('')
-
-		print(seta, setb)
+	# It's possible to cache keywords at the moment the
+	# thread is created and update them when it is edited
+	# but for a small scale it shouldn't make a difference.
+	def getSim(self, other):
+		"""
+		Compares to another thread.
+		Returns 0-1 with 0 being no similarity.
+		"""
+		a = self.title + ' ' + self.content
+		b = other.title + ' ' + other.content
+		seta = set(i[0].lower() for i in Thread.KW_EXTRACTOR.extract_keywords(a))
+		setb = set(i[0].lower() for i in Thread.KW_EXTRACTOR.extract_keywords(b))
+		if len(seta.union(setb)) == 0:
+			return 0
+		# print(seta, setb)
 		return Thread.getJaccard(seta, setb)
 
-	def getRelevance(self, user):
-		
-		pass
+	def getSimUser(self, usercorpus):
+		"""
+		Compares to another user's corpus.
+		Returns 0-1 with 0 being no similarity.
+		"""
+		a = self.title + ' ' + self.content
+		b = usercorpus # when you don't know if it's user_corpus or userCorpus
+		seta = set(i[0].lower() for i in Thread.KW_EXTRACTOR.extract_keywords(a))
+		setb = set(i[0].lower() for i in Thread.KW_EXTRACTOR.extract_keywords(b))
+		print("Thread keyword:", seta)
+		print("User keyword:", setb)
+		if len(seta.union(setb)) == 0:
+			return 0
+		# print(seta, setb)
+		return Thread.getJaccard(seta, setb)
+
+	def getRelevance(self, user, usercorpus):
+		"""
+		Returns a generic relevance score for sorting of view page posts.
+		usercorpus is left separately and not as a field in user because
+		I don't want to waste memory making a copy of text in the
+		User/UserProfile class. Intention is to have whatever method
+		that calls this calculate the corpus locally and reuse that per
+		call to every thread.
+
+		seconds_diff: inverse of the number of seconds since post creation
+		"""
+		seconds_diff = 1 / (datetime.now() - self.created_at.replace(tzinfo=None)).total_seconds()
+		print("Time diff relevance:", seconds_diff)
+		content_sim = self.getSimUser(usercorpus)
+		print("Content similarity score:", content_sim)
+		return seconds_diff + content_sim
 
 class Postable(PolymorphicModel):
 	"""Abstract class for postable content."""
@@ -251,4 +301,3 @@ class ThreadJoinRequestNotification(Notifiable):
 
 	def getContent(self):
 		return "Threadchat Join Request: " + self.threadjoinrequest.getThreadTitle()
-

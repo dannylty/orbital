@@ -6,6 +6,13 @@
 
 {% block content %}
 	<div class="center">
+
+		<form action="#" method="get">
+			Sort by:
+			<button name="sortby" type="submit" value="relevance">relevance</button>
+			<button name="sortby" type="submit" value="chronological">chronological</button>
+		</form>
+
 		{% for message in messages %}
 			<div class="container-fluid p-0">
 				<div class="alert {{ message.tags }} alert-dismissible" role="alert" >
