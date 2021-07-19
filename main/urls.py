@@ -17,4 +17,6 @@ path("search", views.search, name="search"),
 path("thread/<int:id>/edit", views.editthread, name="editthread"),
 path("thread/<int:id>/delete", views.deletethread, name="deletethread"),
 path("edit_profile_thread", views.editprofilethread, name="editprofilethread"),
+# UNCOMMENT THIS AFTER views.privatechat IS CREATED
+# path("privatechat/<int:id>", views.privatechat, name="privatechat"),
 ]

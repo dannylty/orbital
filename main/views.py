@@ -218,6 +218,7 @@ def threadchat(response, id):
 
 	return render(response, "main/threadchat.html", {"tc":tc, "all_tc":all_tc})
 
+
 @login_required(login_url='/loginprompt')
 def notifications(response):
 	nlist = response.user.notifiable_set.all()
@@ -234,7 +235,12 @@ def notifications(response):
 
 @login_required(login_url='/loginprompt')
 def chatlist(response):
-	return render(response, "main/chatlist.html", {"all_tc":response.user.threadchat_set.all()})
+	user1_list = response.user.pmuser1_set.all()
+	user2_list = response.user.pmuser2_set.all()
+	all_pm = list(set(user1_list).intersection(user2_list))
+
+	return render(response, "main/chatlist.html", {"all_tc":response.user.threadchat_set.all(),
+													"all_pm":all_pm})
 
 @login_required(login_url='/loginprompt')
 def search(response):

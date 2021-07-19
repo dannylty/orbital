@@ -61,7 +61,7 @@ class UserProfile(models.Model):
 		if self.major == other.major and self.major != 'Anonymous':
 			value += 0.05
 		return value
-		
+
 
 class Thread(models.Model):
 	LOCATION_CHOICES = (
