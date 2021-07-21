@@ -156,24 +156,27 @@ def profile(response, id):
 		# wants to send private message
 		if response.POST.get("pm"):
 			print("received")
-			this_user = UserProfile.objects.get(id=id).user
 
-			first_set = response.user.pmuser1_set.filter(user2=this_user)
-			second_set = response.user.pmuser2_set.filter(user1=this_user)
-			union_set = first_set.union(second_set)
+			if id < response.user.id:
+				user1 = UserProfile.objects.get(id=id).user
+				user2 = response.user
+
+			elif id > response.user.id:
+				user2 = UserProfile.objects.get(id=id).user
+				user1 = response.user
+
+			else:
+				messages.error(response, 'Invalid URL.')
+				return HttpResponseRedirect(response.META.get('HTTP_REFERER', '/'))
+
+			filtered_set = user1.pmuser1_set.filter(user2=user2)
 
 			# checks no current PrivateMessageChat instance between these 2 users
-			if len(union_set) == 0:
-				PrivateMessageChat.objects.create(user1=response.user, user2=this_user)
-				PrivateMessageChat.objects.create(user2=response.user, user1=this_user)
-				first_set = response.user.pmuser1_set.filter(user2=this_user)
-				second_set = response.user.pmuser2_set.filter(user1=this_user)
-				union_set = first_set.union(second_set)
+			if len(filtered_set) == 0:
+				PrivateMessageChat.objects.create(user1=user1, user2=user2)
+				filtered_set = user1.pmuser1_set.filter(user2=user2)
 
-			id1 = response.user.id
-			id2 = id
-
-			return HttpResponseRedirect(f"/pmchat/{id1}{id2}")
+			return HttpResponseRedirect(f"/pmchat/{user1.id}_{user2.id}")
 
 		else:
 			print("Unknown POST")
@@ -188,10 +191,8 @@ def profile(response, id):
 def pmchat(response, id1, id2):
 	user1 = UserProfile.objects.get(id=id1).user
 	user2 = UserProfile.objects.get(id=id2).user
-	first_set = user1.pmuser1_set.filter(user2=user2)
-	second_set = user1.pmuser2_set.filter(user1=user2)
-	union_set = first_set.union(second_set)
-	all_pm_posts = list(PrivateMessagePost.objects.filter(pmchat=union_set[0])) + list(PrivateMessagePost.objects.filter(pmchat=union_set[1]))
+	pm_chat_object = user1.pmuser1_set.filter(user2=user2)[0]
+	all_pm_posts = list(PrivateMessagePost.objects.filter(pmchat=pm_chat_object))
 	all_pm_posts = sorted(all_pm_posts, key=lambda x: x.created_at)
 
 	all_tc = response.user.threadchat_set.all()
@@ -200,7 +201,7 @@ def pmchat(response, id1, id2):
 		if response.POST.get("newpm"):
 			txt = response.POST.get("newpm")
 			if len(txt) > 0:
-				first_set[0].privatemessagepost_set.create(user=response.user, content=txt)
+				pm_chat_object.privatemessagepost_set.create(user=response.user, content=txt)
 			else:
 				print("error: invalid length")
 		else:
@@ -218,7 +219,7 @@ def pmchat(response, id1, id2):
 	return render(response, "main/pmchat.html", {"all_pm_posts":all_pm_posts,
 												"other_user": other_user,
 												"all_tc":all_tc,
-												"all_pm": response.user.pmuser1_set.all()})
+												"all_pm": response.user.pmuser1_set.all().union(response.user.pmuser2_set.all())})
 
 
 @login_required(login_url='/loginprompt')
