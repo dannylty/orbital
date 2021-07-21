@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Thread, Comment, ThreadChat, ThreadJoinRequest, UserProfile, PrivateMessageChat
+from .models import Thread, Comment, ThreadChat, ThreadJoinRequest, UserProfile, PrivateMessageChat, PrivateMessagePost
 from .forms import CreateNewThread, EditProfileForm, EditThreadForm, EditProfileThreadForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -160,21 +160,20 @@ def profile(response, id):
 
 			first_set = response.user.pmuser1_set.filter(user2=this_user)
 			second_set = response.user.pmuser2_set.filter(user1=this_user)
-			chat_post = first_set.union(second_set)[0]
+			union_set = first_set.union(second_set)
 
 			# checks no current PrivateMessageChat instance between these 2 users
-			if len(chat_post) == 0:
+			if len(union_set) == 0:
 				PrivateMessageChat.objects.create(user1=response.user, user2=this_user)
-				chat_post = response.user.pmuser1_set.filter(user2=this_user)[0]
+				PrivateMessageChat.objects.create(user2=response.user, user1=this_user)
+				first_set = response.user.pmuser1_set.filter(user2=this_user)
+				second_set = response.user.pmuser2_set.filter(user1=this_user)
+				union_set = first_set.union(second_set)
 
-			# TO DO
-			# TO DO
-			# TO DO
-			# TO DO
-			# TO DO
+			id1 = response.user.id
+			id2 = id
 
-			# Add rendering here.
-			# return render(response, ...
+			return HttpResponseRedirect(f"/pmchat/{id1}{id2}")
 
 		else:
 			print("Unknown POST")
@@ -184,6 +183,43 @@ def profile(response, id):
 	is_curr_user = id == response.user.id
 	return render(response, "main/profile.html", {"t":response.user.userprofile.thread,
 		"this_userprofile":this_userprofile, "is_curr_user":is_curr_user})
+
+@login_required(login_url='/loginprompt')
+def pmchat(response, id1, id2):
+	user1 = UserProfile.objects.get(id=id1).user
+	user2 = UserProfile.objects.get(id=id2).user
+	first_set = user1.pmuser1_set.filter(user2=user2)
+	second_set = user1.pmuser2_set.filter(user1=user2)
+	union_set = first_set.union(second_set)
+	all_pm_posts = list(PrivateMessagePost.objects.filter(pmchat=union_set[0])) + list(PrivateMessagePost.objects.filter(pmchat=union_set[1]))
+	all_pm_posts = sorted(all_pm_posts, key=lambda x: x.created_at)
+
+	all_tc = response.user.threadchat_set.all()
+
+	if response.method == "POST":
+		if response.POST.get("newpm"):
+			txt = response.POST.get("newpm")
+			if len(txt) > 0:
+				first_set[0].privatemessagepost_set.create(user=response.user, content=txt)
+			else:
+				print("error: invalid length")
+		else:
+			print("error: invalid POST")
+		return HttpResponseRedirect(response.META.get('HTTP_REFERER', '/'))
+
+	if response.user == user1:
+		other_user = user2
+	elif response.user == user2:
+		other_user = user1
+	else:
+		# return to previous URL
+		return HttpResponseRedirect(response.META.get('HTTP_REFERER', '/'))
+
+	return render(response, "main/pmchat.html", {"all_pm_posts":all_pm_posts,
+												"other_user": other_user,
+												"all_tc":all_tc,
+												"all_pm": response.user.pmuser1_set.all()})
+
 
 @login_required(login_url='/loginprompt')
 def editprofile(response):
@@ -237,7 +273,7 @@ def notifications(response):
 def chatlist(response):
 	user1_list = response.user.pmuser1_set.all()
 	user2_list = response.user.pmuser2_set.all()
-	all_pm = list(set(user1_list).intersection(user2_list))
+	all_pm = list(set(user1_list).union(user2_list))
 
 	return render(response, "main/chatlist.html", {"all_tc":response.user.threadchat_set.all(),
 													"all_pm":all_pm})
