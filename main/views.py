@@ -137,7 +137,7 @@ def view(response):
 		response.user.userprofile.view_chronological = True
 		response.user.save()
 
-	tlist = Thread.objects.filter(viewable=True).order_by("-created_at").exclude(user=response.user)
+	tlist = Thread.objects.filter(viewable=True).order_by("-created_at")
 	if not response.user.userprofile.view_chronological:
 
 		corpus = response.user.userprofile.getCorpus()
@@ -253,7 +253,9 @@ def threadchat(response, id):
 			print("error: invalid POST")
 		return HttpResponseRedirect("/threadchat/%i" % id)
 
-	return render(response, "main/threadchat.html", {"tc":tc, "all_tc":all_tc})
+	return render(response, "main/threadchat.html", {"tc":tc,
+													"all_tc":all_tc,
+													"all_pm": response.user.pmuser1_set.all().union(response.user.pmuser2_set.all())})
 
 
 @login_required(login_url='/loginprompt')

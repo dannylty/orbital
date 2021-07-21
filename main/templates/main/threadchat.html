@@ -1,5 +1,5 @@
 <!-- CHATBOX FOR TC etc. -->
-{% extends 'main/chatlist.html' %}
+{% extends 'main/base.html' %}
 
 {% block title %}View Thread Chat{% endblock %}
 
@@ -14,7 +14,7 @@
 				<p><strong>Private Messages</strong></p>
 			</div>
 		</div>
-		<div class="scrollable-chats-tc">
+		<div class="scrollable-chats-tc" id="scrollable-chats-tc">
 			{% for threadchat in all_tc %}
 				<a href="/threadchat/{{threadchat.id}}">
 					<div class="chat-info">
@@ -24,15 +24,15 @@
 				</a>
 			{% endfor %}
 		</div>
-		<!-- <div class="scrollable-chats-pm">
-			{% for privatechat in all_pm %}
-				<a href="/privatechat/{{privatechat.id}}">
-					<div class="chat-info">
-						<p>Conversation between {{privatechat.user1}} and {{privatechat.user2}}</p>
-					</div>
-				</a>
-			{% endfor %}
-		</div> -->
+		<div class="scrollable-chats-pm" id="scrollable-chats-pm">
+      {% for pm in all_pm %}
+        <a href="/pmchat/{{pm.user1.id}}_{{pm.user2.id}}">
+          <div class="chat-info">
+            <h5>{{pm.user1}}</h5>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
 	</div>
 
 

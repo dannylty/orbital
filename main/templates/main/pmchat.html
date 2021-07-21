@@ -6,14 +6,14 @@
   <div class="chat-sidebar">
     <h3 class="inbox">Inbox</h3>
     <div class="tc-or-pm">
-      <div class="tc" id="tc" onclick="toTc()">
+      <div class="tc-noshow" id="tc" onclick="toTc()">
         <p><strong>Thread Chat</strong></p>
       </div>
-      <div class="pm" id="pm" onclick="toPm()">
+      <div class="pm-show" id="pm" onclick="toPm()">
         <p><strong>Private Messages</strong></p>
       </div>
     </div>
-    <div class="scrollable-chats-tc">
+    <div class="scrollable-chats-tc-noshow" id="scrollable-chats-tc">
       {% for threadchat in all_tc %}
         <a href="/threadchat/{{threadchat.id}}">
           <div class="chat-info">
@@ -23,17 +23,15 @@
         </a>
       {% endfor %}
     </div>
-    <!-- THIS PART STILL BUGGY -->
-    <!-- <div class="scrollable-chats-pm">
+    <div class="scrollable-chats-pm-show" id="scrollable-chats-pm">
       {% for pm in all_pm %}
-        <a href="/home/">
+        <a href="/pmchat/{{pm.user1.id}}_{{pm.user2.id}}">
           <div class="chat-info">
-            COME BACK TO THIS PART
-            <p>{{pm.user1}}</p>
+            <h5>{{pm.user1}}</h5>
           </div>
         </a>
       {% endfor %}
-    </div> -->
+    </div>
   </div>
 
   <div class="chatbox">

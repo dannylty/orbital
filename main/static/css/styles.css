@@ -74,7 +74,8 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   line-height: normal;
 }
 
@@ -310,6 +311,14 @@ body {
   border-radius: 5px 5px 0 0;
 }
 
+.pm-show {
+  display: inline-block;
+  width: 48%;
+  text-align: center;
+  border-radius: 5px 5px 0 0;
+  background-color: white;
+}
+
 .post-datetime {
   font-size: 0.7rem;
   margin-bottom: 0;
@@ -392,12 +401,25 @@ body {
 .scrollable-chats-tc {
   height: 100%;
   overflow: auto;
+  display: block;
+}
+
+.scrollable-chats-tc-noshow {
+  height: 100%;
+  overflow: auto;
+  display: none;
 }
 
 .scrollable-chats-pm {
   height: 100%;
   overflow: auto;
-  visibility: hidden;
+  display: none;
+}
+
+.scrollable-chats-pm-show {
+  height: 100%;
+  overflow: auto;
+  display: block;
 }
 
 .searchbar {
@@ -433,6 +455,14 @@ body {
   text-align: center;
   border-radius: 5px 5px 0 0;
   background-color: white;
+}
+
+.tc-noshow {
+  display: inline-block;
+  width: 49%;
+  text-align: center;
+  border-radius: 5px 5px 0 0;
+  background-color: #BFBFBF;
 }
 
 .tc-or-pm {

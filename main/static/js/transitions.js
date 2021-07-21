@@ -13,13 +13,13 @@ function mouseOut() {
 function toPm() {
   document.getElementById("tc").style.backgroundColor = "#BFBFBF";
   document.getElementById("pm").style.backgroundColor = "white";
-  document.getElementsByClassName("scrollable-chats-tc")[0].style.visibility = "hidden";
-  document.getElementsByClassName("scrollable-chats-pm")[0].style.visibility = "visible";
+  document.getElementById("scrollable-chats-tc").style.display = "none";
+  document.getElementById("scrollable-chats-pm").style.display = "block";
 }
 
 function toTc() {
   document.getElementById("tc").style.backgroundColor = "white";
   document.getElementById("pm").style.backgroundColor = "#BFBFBF";
-  document.getElementsByClassName("scrollable-chats-tc")[0].style.visibility = "visible";
-  document.getElementsByClassName("scrollable-chats-pm")[0].style.visibility = "hidden";
+  document.getElementById("scrollable-chats-pm").style.display = "none";
+  document.getElementById("scrollable-chats-tc").style.display = "block";
 }
