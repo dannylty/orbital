@@ -81,7 +81,6 @@ body {
 .chat-sidebar {
   border-style: solid;
   border-width: thin;
-  padding-top: 5px;
   position: fixed;
   left: 0;
   background-color: white;
@@ -254,7 +253,9 @@ body {
 }
 
 .inbox {
-  margin-left: 20px;
+  background-color: #bfbfbf;
+  padding: 5px 20px;
+  margin-bottom: 0;
 }
 
 .joinchat {
@@ -300,6 +301,13 @@ body {
   position: absolute;
   right: 200px;
   margin-top: 12px;
+}
+
+.pm {
+  display: inline-block;
+  width: 48%;
+  text-align: center;
+  border-radius: 5px 5px 0 0;
 }
 
 .post-datetime {
@@ -381,9 +389,15 @@ body {
   float: left;
 }
 
-.scrollable-chats {
+.scrollable-chats-tc {
   height: 100%;
   overflow: auto;
+}
+
+.scrollable-chats-pm {
+  height: 100%;
+  overflow: auto;
+  visibility: hidden;
 }
 
 .searchbar {
@@ -411,6 +425,23 @@ body {
   border-width: thin;
   border-radius: 20px;
   padding: 0 5px;
+}
+
+.tc {
+  display: inline-block;
+  width: 49%;
+  text-align: center;
+  border-radius: 5px 5px 0 0;
+  background-color: white;
+}
+
+.tc-or-pm {
+  background-color: #BFBFBF;
+}
+
+.tc-or-pm p {
+  margin-top: 10px;
+  display: inline-block;
 }
 
 .topnav {

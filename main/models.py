@@ -52,6 +52,17 @@ class UserProfile(models.Model):
 				corpus += str(t) + " "
 		return corpus
 
+	def getSimValue(self, other):
+		value = 0
+		if self.year == other.year and self.year != 'Anonymous':
+			value += 0.01
+		if self.faculty == other.faculty and self.faculty != 'Anonymous':
+			value += 0.02
+		if self.major == other.major and self.major != 'Anonymous':
+			value += 0.05
+		return value
+
+
 class Thread(models.Model):
 	LOCATION_CHOICES = (
 		('General', 'General'),
@@ -169,7 +180,9 @@ class Thread(models.Model):
 		print("Time diff relevance:", seconds_diff)
 		content_sim = self.getSimUser(usercorpus)
 		print("Content similarity score:", content_sim)
-		return seconds_diff + content_sim
+		user_compat = self.user.userprofile.getSimValue(user.userprofile)
+		print("User compatibility:", user_compat)
+		return seconds_diff + content_sim + user_compat
 
 class Postable(PolymorphicModel):
 	"""Abstract class for postable content."""
