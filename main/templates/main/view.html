@@ -54,11 +54,21 @@
 							<h3>Comments</h3>
 						</div>
 					</a>
-					<a href="/threadchat/{{t.id}}">
+
+					{% if isPT %}
+						<a href="/profile/{{t.user.id}}">
 						<div class="joinchat">
-							<h3>Chat</h3>
+							<h4>Private Message</h4>
 						</div>
-					</a>
+						</a>
+					{% else %}
+						<a href="/threadchat/{{t.id}}">
+							<div class="joinchat">
+								<h3>Chat</h3>
+							</div>
+						</a>
+					{% endif %}
+
 				</div>
 			</div>
 		{% endfor %}

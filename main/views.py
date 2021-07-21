@@ -137,7 +137,7 @@ def view(response):
 		response.user.userprofile.view_chronological = True
 		response.user.save()
 
-	tlist = Thread.objects.filter(viewable=True).order_by("-created_at")
+	tlist = Thread.objects.filter(viewable=True).order_by("-created_at").exclude(user=response.user)
 	if not response.user.userprofile.view_chronological:
 
 		corpus = response.user.userprofile.getCorpus()
