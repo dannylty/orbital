@@ -7,11 +7,19 @@
 {% block content %}
 	<div class="center">
 
-		<form action="#" method="get">
-			Sort by:
-			<button name="sortby" type="submit" value="relevance">relevance</button>
-			<button name="sortby" type="submit" value="chronological">chronological</button>
-		</form>
+		<div class="sort-by">
+			<form action="#" method="get">
+				<button name="sortby" type="submit" value="relevance" class="plain-btn">
+					<img src="{% static 'images/favorites.svg' %}" alt="">
+					<p>Recommended</p>
+				</button>
+				<button name="sortby" type="submit" value="chronological" class="plain-btn">
+					<img src="{% static 'images/clock.svg' %}" alt="">
+					<p>New</p>
+				</button>
+			</form>
+		</div>
+
 
 		{% for message in messages %}
 			<div class="container-fluid p-0">
@@ -24,31 +32,42 @@
 			<img class="suchempty" src="{% static 'images/suchempty.jpg' %}" alt="Such empty. Much wow.">
 		{% endif %}
 		{% for t, isPT in tdict.items %}
-			<div class="grid-container-view">
-				<div class="{% if not isPT %}post-info{% else %}pt-info{% endif %}">
-					{% if not isPT %}<p class="post-datetime post-info-p">{{t.created_at}}</p>{% endif %}
-					<div class="edit-delete">
-						{% if user == t.user %}
-							<a href="/thread/{{t.id}}/edit">
-								<img class="edit" src="{% static 'images/more.svg' %}" alt="edit">
-							</a>
-							<a href="/thread/{{t.id}}/delete">
-								<img class="delete" src="{% static 'images/delete.svg' %}" alt="delete">
-							</a>
-						{% endif %}
+			<div class="{% if not isPT %}post-info{% else %}pt-info{% endif %}">
+				{% if not isPT %}<p class="post-datetime post-info-p">{{t.created_at}}</p>{% endif %}
+				<div class="edit-delete">
+					{% if user == t.user %}
+						<a href="/thread/{{t.id}}/edit">
+							<img class="edit" src="{% static 'images/more.svg' %}" alt="edit">
+						</a>
+						<a href="/thread/{{t.id}}/delete">
+							<img class="delete" src="{% static 'images/delete.svg' %}" alt="delete">
+						</a>
+					{% endif %}
+				</div>
+				<h3 class="{% if not user == t.user %}post-info-h3{% endif %}">{{t.title}}</h3>
+				<p class="post-info-p">{{t.content}}</p>
+				{% for tag in t.tags %}
+					<div class="tags">
+						{{tag}}
 					</div>
-					<h3 class="{% if not user == t.user %}post-info-h3{% endif %}">{{t.title}}</h3>
-					<p class="post-info-p">{{t.content}}</p>
-					{% for tag in t.tags %}
-						<div class="tags">
-							{{tag}}
-						</div>
-					{% endfor %}
+				{% endfor %}
+				<div class="">
+					<div class="comment-or-chat">
+						<a href="/thread/{{t.id}}">
+							<img src="{% static 'images/comment.svg' %}" alt="">
+							<p>Comments</p>
+						</a>
+						<a href="/threadchat/{{t.id}}">
+							<img src="{% static 'images/chat.svg' %}" alt="">
+							<p>Chat</p>
+						</a>
+					</div>
 					<div class="postedby">
 						<p>Posted by <a href="/profile/{{t.user.id}}">{{t.user}}</a></p>
 					</div>
 				</div>
-				<div class="commentorchat">
+			</div>
+				<!-- <div class="commentorchat">
 					<a href="/thread/{{t.id}}">
 						<div class="comments-btn">
 							<h3>Comments</h3>
@@ -69,8 +88,7 @@
 						</a>
 					{% endif %}
 
-				</div>
-			</div>
+				</div> -->
 		{% endfor %}
 	</div>
 {% endblock %}
