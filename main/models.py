@@ -80,6 +80,8 @@ class Thread(models.Model):
 	tags = models.JSONField(default=list, null=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	viewable = models.BooleanField(default=True)
+	is_temp = models.BooleanField(default=False)
+	ttl = models.IntegerField(default=0, null=True)
 
 	# If this is not null, then this thread is a profile thread.
 	profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, null=True)
@@ -183,6 +185,9 @@ class Thread(models.Model):
 		user_compat = self.user.userprofile.getSimValue(user.userprofile)
 		print("User compatibility:", user_compat)
 		return seconds_diff + content_sim + user_compat
+
+	def checkExpired(self):
+		return self.is_temp and self.ttl < (datetime.now() - self.created_at.replace(tzinfo=None)).days
 
 class Postable(PolymorphicModel):
 	"""Abstract class for postable content."""

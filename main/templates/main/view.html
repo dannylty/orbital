@@ -48,7 +48,7 @@
 				<p class="post-info-p">{{t.content}}</p>
 				{% for tag in t.tags %}
 					<div class="tags">
-						{{tag}}
+						<a href="/search?q={{tag}}">{{tag}}</a>
 					</div>
 				{% endfor %}
 				<div class="">

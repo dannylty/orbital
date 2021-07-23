@@ -80,6 +80,13 @@ def editthread(response, id):
 			t.content = c
 			t.location = form.cleaned_data["location"]
 			t.tags = form.cleaned_data["tags"]
+
+			if form.cleaned_data["ttl"] == None:
+				t.is_temp = False
+			else:
+				t.is_temp = True
+				t.ttl = form.cleaned_data["ttl"]
+
 			t.save()
 
 			messages.success(response, 'The thread has been updated!')
@@ -112,6 +119,8 @@ def create(response):
 			c = form.cleaned_data["content"]
 			tg = form.cleaned_data["tags"]
 			loc = form.cleaned_data["location"]
+			ttl = form.cleaned_data["ttl"]
+			is_temp = ttl != None
 
 			# Require a check cause redirection function filters using title and content.
 			if Thread.objects.filter(title=t, content=c).count() > 0:
@@ -119,7 +128,7 @@ def create(response):
 				messages.error(response, 'This thread already exists. Please try again with different title/content.')
 				return render(response, "main/create.html", {"form":form})
 
-			response.user.thread_set.create(title=t, content=c, tags=tg, location=loc)
+			response.user.thread_set.create(title=t, content=c, tags=tg, location=loc, is_temp=is_temp, ttl=ttl)
 			messages.success(response, 'New thread successfully created!')
 
 		return HttpResponseRedirect("/thread/%i" % Thread.objects.get(title=t, content=c).id)
@@ -147,6 +156,9 @@ def view(response):
 
 	tdict = {}
 	for t in tlist:
+		if t.checkExpired():
+			t.viewable = False
+			continue
 		tdict[t] = t.isProfileThread()
 	return render(response, "main/view.html", {"tlist":tlist, "tdict":tdict})
 
