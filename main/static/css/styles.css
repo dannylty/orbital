@@ -22,6 +22,8 @@ body {
   top: 5px;
   left: 50px;
   border-radius: 10px;
+  opacity: 90%;
+  border-style: solid;
 }
 
 .bar::placeholder {

@@ -18,6 +18,4 @@ path("thread/<int:id>/edit", views.editthread, name="editthread"),
 path("thread/<int:id>/delete", views.deletethread, name="deletethread"),
 path("edit_profile_thread", views.editprofilethread, name="editprofilethread"),
 path("pmchat/<int:id1>_<int:id2>", views.pmchat, name="pmchat"), # here, id1 and id2 represent the id of the 2 users in this pmchat
-# UNCOMMENT THIS AFTER views.privatechat IS CREATED
-# path("privatechat/<int:id>", views.privatechat, name="privatechat"),
 ]
