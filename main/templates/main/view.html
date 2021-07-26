@@ -48,7 +48,9 @@
 				</div>
 				<h3 class="{% if not user == t.user %}post-info-h3{% endif %}">{{t.title}}</h3>
 				<p class="post-info-p">{{t.content}}</p>
-				{% if not isPT %}<p class="post-info-p">Location: {{t.location}}</p>{% endif %}
+				{% if not isPT %}
+					<p class="post-info-p">Location: {{t.location}}</p>
+				{% endif %}
 				{% for tag in t.tags %}
 					<div class="tags">
 						<a href="/search?q={{tag}}">{{tag}}</a>
