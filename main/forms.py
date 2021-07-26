@@ -51,3 +51,5 @@ class EditProfileThreadForm(forms.ModelForm):
 	class Meta:
 		model = Thread
 		fields = ['content', 'viewable']
+	content = forms.CharField(label="Content", max_length=1000, widget=forms.Textarea)
+
