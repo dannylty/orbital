@@ -22,7 +22,7 @@ class CreateNewThread(forms.Form):
 	content = forms.CharField(label="Content", max_length=1000, widget=forms.Textarea)
 	location = forms.ChoiceField(label="Location", choices=LOCATION_CHOICES)
 	tags = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=TAG_CHOICES, required=False)
-	ttl = forms.IntegerField(label="Thread Duration in Days (Leave blank for permanent thread)", required=False, min_value=0, max_value=999) # if 0, thread is permanent.
+	ttl = forms.DecimalField(label="Thread Duration in Days (Leave blank for permanent thread)", required=False, min_value=0, max_value=999) # if 0, thread is permanent.
 
 class CreateNewComment(forms.Form):
 	content = forms.CharField(label="Content", max_length=200)
@@ -42,7 +42,7 @@ class EditThreadForm(forms.ModelForm):
 
 	tags = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=TAG_CHOICES, required=False)
 	content = forms.CharField(label="Content", max_length=1000, widget=forms.Textarea)
-	ttl = forms.IntegerField(label="Thread Duration in Days (Leave blank for permanent thread)", required=False, min_value=0, max_value=999) # if 0, thread is permanent.
+	ttl = forms.DecimalField(label="Thread Duration in Days (Leave blank for permanent thread)", required=False, min_value=0, max_value=999) # if 0, thread is permanent.
 	class Meta:
 		model = Thread
 		fields = ['title', 'content', 'location', 'ttl']

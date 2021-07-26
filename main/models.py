@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from polymorphic.models import PolymorphicModel
-from datetime import datetime
+from datetime import datetime, timezone
 import yake # for keyword extraction
 
 # Create your models here.
@@ -81,7 +81,7 @@ class Thread(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	viewable = models.BooleanField(default=True)
 	is_temp = models.BooleanField(default=False)
-	ttl = models.IntegerField(default=0, null=True)
+	ttl = models.DecimalField(default=0, null=True, max_digits=19, decimal_places=10)
 
 	# If this is not null, then this thread is a profile thread.
 	profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, null=True)
@@ -192,8 +192,8 @@ class Thread(models.Model):
 	def checkExpired(self):
 		if self.ttl == None:
 			return False
-		print("Is temp:", self.is_temp, "\n", "Lifetime in seconds:", self.ttl * 86400, "\n", "Time elapsed in seconds:", (datetime.now() - self.created_at.replace(tzinfo=None)).total_seconds())
-		return self.is_temp and self.ttl * 86400 <= (datetime.now() - self.created_at.replace(tzinfo=None)).total_seconds()
+		print("Is temp:", self.is_temp, "\n", "Lifetime in seconds:", self.ttl * 86400, "\n", "Time elapsed in seconds:", (datetime.now(tz=timezone.utc).replace(tzinfo=None) - self.created_at.replace(tzinfo=None)).total_seconds())
+		return self.is_temp and self.ttl * 86400 <= (datetime.now(tz=timezone.utc).replace(tzinfo=None) - self.created_at.replace(tzinfo=None)).total_seconds()
 
 class Postable(PolymorphicModel):
 	"""Abstract class for postable content."""
