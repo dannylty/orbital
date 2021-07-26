@@ -355,7 +355,6 @@ body {
 
 .post-info-p {
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
@@ -381,6 +380,7 @@ body {
   height: 100%;
   color: #707070;
   padding: 10px 20px;
+  margin-bottom:  20px;
 }
 
 .replyform {
