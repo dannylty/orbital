@@ -50,7 +50,7 @@ class UserProfile(models.Model):
 		for t in self.user.thread_set.order_by("-created_at")[:min(NUM_THREADS, len(self.user.thread_set.all()))]:
 			if not t.isProfileThread():
 				corpus += str(t) + " "
-		return corpus
+		return corpus + self.thread.content
 
 	def getSimValue(self, other):
 		value = 0
@@ -96,7 +96,8 @@ class Thread(models.Model):
 				user=instance.user,
 				title=str(instance.user) + "'s profile thread",
 				profile=instance,
-				viewable=False
+				viewable=False,
+				is_temp=False
 				)
 
 	@receiver(post_save, sender=UserProfile)
@@ -161,7 +162,7 @@ class Thread(models.Model):
 		seta = set(i[0].lower() for i in Thread.KW_EXTRACTOR.extract_keywords(a))
 		setb = set(i[0].lower() for i in Thread.KW_EXTRACTOR.extract_keywords(b))
 		print("Thread keyword:", seta)
-		print("User keyword:", setb)
+		# print("User keyword:", setb)
 		if len(seta.union(setb)) == 0:
 			return 0
 		# print(seta, setb)
@@ -179,15 +180,20 @@ class Thread(models.Model):
 		seconds_diff: inverse of the number of seconds since post creation
 		"""
 		seconds_diff = 1 / (datetime.now() - self.created_at.replace(tzinfo=None)).total_seconds()
-		print("Time diff relevance:", seconds_diff)
-		content_sim = self.getSimUser(usercorpus)
-		print("Content similarity score:", content_sim)
+		# print("Time diff relevance:", seconds_diff)
+		content_sim = 0 if user == self.user else self.getSimUser(usercorpus)
+		# no bonus for matching keywords with yourself lol
+		# print("Content similarity score:", content_sim)
 		user_compat = self.user.userprofile.getSimValue(user.userprofile)
-		print("User compatibility:", user_compat)
+		# print("User compatibility:", user_compat)
+		print("Thread relevance:", seconds_diff + content_sim + user_compat, "\n")
 		return seconds_diff + content_sim + user_compat
 
 	def checkExpired(self):
-		return self.is_temp and self.ttl < (datetime.now() - self.created_at.replace(tzinfo=None)).days
+		if self.ttl == None:
+			return False
+		print("Is temp:", self.is_temp, "\n", "Lifetime in seconds:", self.ttl * 86400, "\n", "Time elapsed in seconds:", (datetime.now() - self.created_at.replace(tzinfo=None)).total_seconds())
+		return self.is_temp and self.ttl * 86400 <= (datetime.now() - self.created_at.replace(tzinfo=None)).total_seconds()
 
 class Postable(PolymorphicModel):
 	"""Abstract class for postable content."""

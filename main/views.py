@@ -150,7 +150,7 @@ def view(response):
 	if not response.user.userprofile.view_chronological:
 
 		corpus = response.user.userprofile.getCorpus()
-		print(corpus)
+		print("User corpus:", corpus)
 		tlist = sorted(tlist, key=lambda x: x.getRelevance(response.user, corpus), reverse=True)
 		# print(tlist)
 
@@ -158,6 +158,7 @@ def view(response):
 	for t in tlist:
 		if t.checkExpired():
 			t.viewable = False
+			t.save()
 			continue
 		tdict[t] = t.isProfileThread()
 	return render(response, "main/view.html", {"tlist":tlist, "tdict":tdict})
